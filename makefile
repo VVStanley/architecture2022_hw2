@@ -1,5 +1,5 @@
 test:
-	pytest tests/test_.py
+	pytest tests
 
 linter:
 	flake8 .
