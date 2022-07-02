@@ -1,13 +1,13 @@
 from abc import ABCMeta, abstractmethod
 
-from src.exceptions import OtherMustByVectorInterfaceError
+from src.exceptions import ObjectNotMovableError
 
 
 class VectorInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(self, x: float, y: float) -> None:
-        raise NotImplementedError('Необходимо переопределить метод __init__')
+        raise NotImplementedError
 
     @abstractmethod
     def __add__(self, other: 'VectorInterface') -> 'VectorInterface':
@@ -25,4 +25,4 @@ class Vector(VectorInterface):
         """Операция сложения"""
         if isinstance(other, self.__class__):
             return Vector(self.x + other.x, self.y + other.y)
-        raise OtherMustByVectorInterfaceError
+        raise ObjectNotMovableError
