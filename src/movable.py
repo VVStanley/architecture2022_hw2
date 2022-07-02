@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
+from src.units.unit import Unit
 from src.vector import Vector
 
 
@@ -22,6 +23,16 @@ class MovableInterface(metaclass=ABCMeta):
 
 
 class Movable(MovableInterface):
+    """Делаем объект подвижным"""
+
+    def __init__(self, unit: Unit) -> None:
+        self.unit = unit
 
     def get_position(self) -> Vector:
-        pass
+        return self.unit.position
+
+    def get_velocity(self) -> Vector:
+        return self.unit.velocity
+
+    def set_position(self, vector: Vector) -> None:
+        self.unit.position = vector
