@@ -26,3 +26,10 @@ class Vector(VectorInterface):
         if isinstance(other, self.__class__):
             return Vector(self.x + other.x, self.y + other.y)
         raise ObjectNotMovableError
+
+    @classmethod
+    def plus(cls, vector1: 'Vector', vector2: 'Vector') -> 'Vector':
+        """Проверка векторов перед сложением"""
+        if isinstance(vector1, cls) and isinstance(vector2, cls):
+            return vector1 + vector2
+        raise ObjectNotMovableError
