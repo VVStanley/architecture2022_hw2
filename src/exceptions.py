@@ -1,6 +1,6 @@
-class OtherMustByVectorInterfaceError(Exception):
-    """Исключение возникающее если вектор складывают не с другим объектом"""
+class ObjectNotMovableError(Exception):
+    """Исключение возникающее если сдвигают неподвижный объект"""
 
     def __init__(self) -> None:
-        message = "Складывать можно только векторы"
+        message = "Этот объект не двигается"
         super().__init__(message)

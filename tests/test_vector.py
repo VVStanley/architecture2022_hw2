@@ -1,7 +1,7 @@
-"""Тестирование вектора"""
+"""Тестирование модуля vector"""
 import pytest
 
-from src.exceptions import OtherMustByVectorInterfaceError
+from src.exceptions import ObjectNotMovableError
 from src.vector import Vector
 
 
@@ -22,8 +22,8 @@ class TestVector:
         """Проверяем что вызывается исключение если сложение не с вектором"""
         a = Vector(12, 5)
 
-        with pytest.raises(OtherMustByVectorInterfaceError) as exc_info:
-            a + 10  # type: ignore
+        with pytest.raises(ObjectNotMovableError) as exc_info:
+            a + None  # type: ignore
 
-        assert exc_info.typename == "OtherMustByVectorInterfaceError"
-        assert str(exc_info.value) == "Складывать можно только векторы"
+        assert exc_info.typename == "ObjectNotMovableError"
+        assert str(exc_info.value) == "Этот объект не двигается"
