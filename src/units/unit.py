@@ -9,6 +9,10 @@ class UnitInterface(metaclass=ABCMeta):
     def position(self) -> Vector:
         return NotImplemented
 
+    @position.setter
+    def position(self, vector: Vector) -> None:
+        raise NotImplementedError
+
     @property
     def velocity(self) -> Vector:
         return NotImplemented
