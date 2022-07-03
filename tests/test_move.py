@@ -1,50 +1,41 @@
 """Тесты для модуля move"""
+from unittest.mock import MagicMock, Mock
+
 import pytest
 
 from src.movable import Movable
 from src.move import Move
-from src.units.unit import Unit
 from src.vector import Vector
 
 
 class TestMoveObject:
     """Тестируем объект на передвижение"""
 
-    def test_move_without_velocity(self):
-        """Попытка сдвинуть объект, у которого невозможно прочитать
-        значение мгновенной скорости
-        """
-        tower = Unit()
-        tower.position = Vector(12, 5)
-        tower.velocity = None
+    # TODO: Попытка сдвинуть объект, у которого невозможно прочитать
+    #  положение в пространстве
+    # TODO: Попытка сдвинуть объект, у которого невозможно изменить
+    #  положение в пространстве, приводит к ошибке 1 балл
 
-        movable = Movable(unit=tower)
-
-        move = Move(movable)
-        with pytest.raises(Exception) as exc_info:
-            move.execute()
-
-        assert exc_info.typename == "OtherMustByVectorInterfaceError"
-
-    def test_move_without_position(self):
-        """Попытка сдвинуть объект, у которого невозможно прочитать
-        положение в пространстве
-        """
-        swarm = Unit()
-        swarm.position = None
-        swarm.velocity = Vector(-7, 3)
-
-        movable = Movable(unit=swarm)
+    def test_command(self) -> None:
+        """Тестируем команду"""
+        movable = Mock()
+        movable.get_position = MagicMock(return_value=Vector(12, 5))
+        movable.get_velocity = MagicMock(return_value=Vector(-7, 3))
 
         move = Move(movable)
-        with pytest.raises(Exception) as exc_info:
-            move.execute()
+        move.execute()
 
-        assert exc_info.typename == "OtherMustByVectorInterfaceError"
+        # Проверяем что set_position был вызван
+        assert movable.set_position.called is True
 
-    def test_move(self):
-        """Успешное передвижение"""
-        ship = Unit()
+        args, kwargs = movable.set_position.call_args_list[0]
+
+        # Проверяем что set_position вызван с правильным аргументом
+        assert args[0] == Vector(5, 8)
+
+    def test_move(self) -> None:
+        """Успешное передвижение объекта"""
+        ship = Mock()
         ship.position = Vector(12, 5)
         ship.velocity = Vector(-7, 3)
 
@@ -55,3 +46,21 @@ class TestMoveObject:
 
         assert ship.position.x == 5
         assert ship.position.y == 8
+
+    def test_velocity_not_read(self) -> None:
+        """Попытка сдвинуть объект, у которого невозможно прочитать значение
+        мгновенной скорости
+        """
+        ship = Mock()
+        ship.position = Vector(12, 5)
+        ship.velocity = None
+
+        movable = Movable(unit=ship)
+
+        move = Move(movable)
+
+        with pytest.raises(Exception) as exc_info:
+            move.execute()
+
+        assert exc_info.typename == "ObjectIsNotVectorTypeError"
+        assert str(exc_info.value) == "Type must be Vector"
