@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from src.exceptions import ObjectNotMovableError
+from src.exceptions import ObjectIsNotVectorTypeError
 
 
 class VectorInterface(metaclass=ABCMeta):
@@ -11,6 +11,10 @@ class VectorInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def __add__(self, other: 'VectorInterface') -> 'VectorInterface':
+        return NotImplemented
+
+    @abstractmethod
+    def __eq__(self, other: 'VectorInterface') -> bool:  # type: ignore
         return NotImplemented
 
 
@@ -25,11 +29,17 @@ class Vector(VectorInterface):
         """Операция сложения"""
         if isinstance(other, self.__class__):
             return Vector(self.x + other.x, self.y + other.y)
-        raise ObjectNotMovableError
+        raise ObjectIsNotVectorTypeError
+
+    def __eq__(self, other: 'VectorInterface') -> bool:  # type: ignore
+        """Операция сравнения на равенство"""
+        if isinstance(other, self.__class__):
+            return self.x == other.x and self.y == other.y
+        raise ObjectIsNotVectorTypeError
 
     @classmethod
     def plus(cls, vector1: 'Vector', vector2: 'Vector') -> 'Vector':
         """Проверка векторов перед сложением"""
         if isinstance(vector1, cls) and isinstance(vector2, cls):
             return vector1 + vector2
-        raise ObjectNotMovableError
+        raise ObjectIsNotVectorTypeError
