@@ -12,7 +12,7 @@ class Potate:
         self.rotable.set_direction(
             int(
                 (
-                    self.rotable.get_direction() +
+                    self.rotable.get_direction() +  # noqa W503
                     self.rotable.get_angular_velocity()
                 ) / self.rotable.get_direction_number()
             )
