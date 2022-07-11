@@ -1,7 +1,7 @@
 from src.rotable import RotableInterface
 
 
-class Potate:
+class Rotate:
     """Команда для поворота объекта"""
 
     def __init__(self, rotable: RotableInterface) -> None:
@@ -10,10 +10,8 @@ class Potate:
     def execute(self) -> None:
         """Поворачиваем объект"""
         self.rotable.set_direction(
-            int(
-                (
-                    self.rotable.get_direction() +  # noqa W503
-                    self.rotable.get_angular_velocity()
-                ) / self.rotable.get_direction_number()
-            )
+            (
+                self.rotable.get_direction() +  # noqa W503
+                self.rotable.get_angular_velocity()
+            ) / self.rotable.get_direction_number()
         )

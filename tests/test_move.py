@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
+from src.exceptions import ObjectIsNotVectorTypeError
 from src.movable import Movable
 from src.move import Move
 from src.vector import Vector
@@ -11,13 +12,43 @@ from src.vector import Vector
 class TestMoveObject:
     """Тестируем объект на передвижение"""
 
-    # TODO: Попытка сдвинуть объект, у которого невозможно прочитать
-    #  положение в пространстве
-    # TODO: Попытка сдвинуть объект, у которого невозможно изменить
-    #  положение в пространстве, приводит к ошибке 1 балл
+    def test_move_position_none(self) -> None:
+        """Попытка сдвинуть объект, у которого невозможно прочитать
+        положение в пространстве, приводит к ошибке
+        """
+        movable = Mock()
+        movable.get_position = MagicMock(return_value=None)
+        movable.get_velocity = MagicMock(return_value=Vector(-7, 3))
 
-    def test_command(self) -> None:
-        """Тестируем команду"""
+        move = Move(movable)
+
+        with pytest.raises(ObjectIsNotVectorTypeError) as exc_info:
+            move.execute()
+
+        assert exc_info.typename == "ObjectIsNotVectorTypeError"
+        assert str(exc_info.value) == "Type must be Vector"
+
+    def test_move_velocity_none(self) -> None:
+        """Попытка сдвинуть объект, у которого невозможно изменить
+        положение в пространстве, приводит к ошибке
+        """
+        movable = Mock()
+        movable.get_position = MagicMock(return_value=Vector(12, 5))
+        movable.get_velocity = MagicMock(return_value=None)
+
+        move = Move(movable)
+
+        with pytest.raises(ObjectIsNotVectorTypeError) as exc_info:
+            move.execute()
+
+        assert exc_info.typename == "ObjectIsNotVectorTypeError"
+        assert str(exc_info.value) == "Type must be Vector"
+
+    def test_move_object(self) -> None:
+        """Тестируем команду движения
+        Для объекта, находящегося в точке (12, 5) и движущегося
+        со скоростью (-7, 3) движение меняет положение объекта на (5, 8)
+        """
         movable = Mock()
         movable.get_position = MagicMock(return_value=Vector(12, 5))
         movable.get_velocity = MagicMock(return_value=Vector(-7, 3))
@@ -34,7 +65,10 @@ class TestMoveObject:
         assert args[0] == Vector(5, 8)
 
     def test_move(self) -> None:
-        """Успешное передвижение объекта"""
+        """Успешное передвижение объекта
+        Для объекта, находящегося в точке (12, 5) и движущегося
+        со скоростью (-7, 3) движение меняет положение объекта на (5, 8)
+        """
         ship = Mock()
         ship.position = Vector(12, 5)
         ship.velocity = Vector(-7, 3)

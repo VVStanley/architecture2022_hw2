@@ -19,6 +19,6 @@ class RotableInterface(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def set_direction(self, direction: int) -> None:
+    def set_direction(self, direction: float) -> None:
         """Устанавливаем поворот"""
         raise NotImplementedError
