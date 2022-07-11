@@ -1,4 +1,5 @@
 from src.movable import MovableInterface
+from src.vector import Vector
 
 
 class Move:
@@ -10,5 +11,7 @@ class Move:
     def execute(self) -> None:
         """Перемещаем объект"""
         self.movable.set_position(
-            self.movable.get_position() + self.movable.get_velocity()
+            Vector.plus(
+                self.movable.get_position(), self.movable.get_velocity()
+            )
         )
