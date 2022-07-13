@@ -5,9 +5,9 @@ class CommandInterface(metaclass=ABCMeta):
     """Интерфейс паттерна Команда"""
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def execute(self):
+    def execute(self) -> None:
         raise NotImplementedError
