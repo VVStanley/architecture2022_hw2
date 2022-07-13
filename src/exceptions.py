@@ -8,9 +8,9 @@ class ObjectIsNotVectorTypeError(Exception):
         super().__init__(message)
 
 
-class CommandException(Exception):
+class CommandExceptionError(Exception):
     """Ошибка команды"""
 
     def __init__(self, message: str = None) -> None:
         message = message if message else "General command error"
-        super(CommandException, self).__init__(message)
+        super(CommandExceptionError, self).__init__(message)
