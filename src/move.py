@@ -1,8 +1,9 @@
+from src.design_patterns.command import CommandInterface
 from src.movable import MovableInterface
 from src.vector import Vector
 
 
-class Move:
+class Move(CommandInterface):
     """Команда движения объекта"""
 
     def __init__(self, movable: MovableInterface) -> None:

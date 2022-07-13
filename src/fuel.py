@@ -1,8 +1,9 @@
+from src.design_patterns.command import CommandInterface
 from src.exceptions import CommandExceptionError
 from src.fueled import FueledInterface
 
 
-class BurnFuel:
+class BurnFuel(CommandInterface):
     """Команда сжигания топлива"""
 
     def __init__(self, fueled: FueledInterface) -> None:
@@ -16,7 +17,7 @@ class BurnFuel:
         )
 
 
-class CheckFuel:
+class CheckFuel(CommandInterface):
     """Команда проверки остатка топлива"""
 
     def __init__(self, fueled: FueledInterface) -> None:
