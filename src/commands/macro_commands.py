@@ -1,12 +1,12 @@
-from typing import List
-
+from src.commands.iterator import CommandCollection
 from src.design_patterns.command import CommandInterface
 from src.exceptions import CommandExceptionError
 
 
 class MacroCommand(CommandInterface):
+    """Простейшая макрокоманда"""
 
-    def __init__(self, commands: List[CommandInterface]) -> None:
+    def __init__(self, commands: CommandCollection) -> None:
         self.commands = commands
 
     def execute(self) -> None:

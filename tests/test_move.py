@@ -4,8 +4,7 @@ from unittest.mock import MagicMock, Mock
 import pytest
 
 from src.exceptions import ObjectIsNotVectorTypeError
-from src.movable import Movable
-from src.move import Move
+from src.move.move import MoveCommand
 from src.vector import Vector
 
 
@@ -20,7 +19,7 @@ class TestMoveObject:
         movable.get_position = MagicMock(return_value=None)
         movable.get_velocity = MagicMock(return_value=Vector(-7, 3))
 
-        move = Move(movable)
+        move = MoveCommand(movable)
 
         with pytest.raises(ObjectIsNotVectorTypeError) as exc_info:
             move.execute()
@@ -36,7 +35,7 @@ class TestMoveObject:
         movable.get_position = MagicMock(return_value=Vector(12, 5))
         movable.get_velocity = MagicMock(return_value=None)
 
-        move = Move(movable)
+        move = MoveCommand(movable)
 
         with pytest.raises(ObjectIsNotVectorTypeError) as exc_info:
             move.execute()
@@ -53,7 +52,7 @@ class TestMoveObject:
         movable.get_position = MagicMock(return_value=Vector(12, 5))
         movable.get_velocity = MagicMock(return_value=Vector(-7, 3))
 
-        move = Move(movable)
+        move = MoveCommand(movable)
         move.execute()
 
         # Проверяем что set_position был вызван
@@ -63,38 +62,3 @@ class TestMoveObject:
 
         # Проверяем что set_position вызван с правильным аргументом
         assert args[0] == Vector(5, 8)
-
-    def test_move(self) -> None:
-        """Успешное передвижение объекта
-        Для объекта, находящегося в точке (12, 5) и движущегося
-        со скоростью (-7, 3) движение меняет положение объекта на (5, 8)
-        """
-        ship = Mock()
-        ship.position = Vector(12, 5)
-        ship.velocity = Vector(-7, 3)
-
-        movable = Movable(unit=ship)
-
-        move = Move(movable)
-        move.execute()
-
-        assert ship.position.x == 5
-        assert ship.position.y == 8
-
-    def test_velocity_not_read(self) -> None:
-        """Попытка сдвинуть объект, у которого невозможно прочитать значение
-        мгновенной скорости
-        """
-        ship = Mock()
-        ship.position = Vector(12, 5)
-        ship.velocity = None
-
-        movable = Movable(unit=ship)
-
-        move = Move(movable)
-
-        with pytest.raises(Exception) as exc_info:
-            move.execute()
-
-        assert exc_info.typename == "ObjectIsNotVectorTypeError"
-        assert str(exc_info.value) == "Type must be Vector"

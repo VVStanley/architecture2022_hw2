@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, Mock
 
-from src.rotate import Rotate
+from src.rotate.rotate import RotateCommand
 
 
 class TestRotate:
@@ -13,7 +13,7 @@ class TestRotate:
         rotable.get_angular_velocity = MagicMock(return_value=2)
         rotable.get_direction_number = MagicMock(return_value=8)
 
-        rotate = Rotate(rotable)
+        rotate = RotateCommand(rotable)
 
         rotate.execute()
 

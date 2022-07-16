@@ -1,9 +1,9 @@
 from src.design_patterns.command import CommandInterface
 from src.exceptions import CommandExceptionError
-from src.fueled import FueledInterface
+from src.fuel.fueled import FueledInterface
 
 
-class BurnFuel(CommandInterface):
+class BurnFuelCommand(CommandInterface):
     """Команда сжигания топлива"""
 
     def __init__(self, fueled: FueledInterface) -> None:
@@ -13,11 +13,11 @@ class BurnFuel(CommandInterface):
         """Уменьшаем топливо"""
         self.fueled.set_fuel(
             self.fueled.get_remaining_fuel() -  # noqa W503
-            self.fueled.get_fuel_consumption()
+            self.fueled.get_consumption_fuel()
         )
 
 
-class CheckFuel(CommandInterface):
+class CheckFuelCommand(CommandInterface):
     """Команда проверки остатка топлива"""
 
     def __init__(self, fueled: FueledInterface) -> None:
@@ -26,6 +26,4 @@ class CheckFuel(CommandInterface):
     def execute(self) -> None:
         """Проверка осталось ли топливо"""
         if self.fueled.get_remaining_fuel() <= 0:
-            raise CommandExceptionError(
-                f"Ran out of fuel for unit: {self.fueled}"
-            )
+            raise CommandExceptionError("Ran out of fuel for unit")

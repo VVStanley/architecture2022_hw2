@@ -1,8 +1,8 @@
 from src.design_patterns.command import CommandInterface
-from src.rotable import RotableInterface
+from src.rotate.rotable import RotableInterface
 
 
-class Rotate(CommandInterface):
+class RotateCommand(CommandInterface):
     """Команда для поворота объекта"""
 
     def __init__(self, rotable: RotableInterface) -> None:
