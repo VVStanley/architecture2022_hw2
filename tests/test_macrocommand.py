@@ -1,11 +1,10 @@
-from typing import List
 from unittest.mock import Mock
 
 import pytest
 
-from src.design_patterns.command import CommandInterface
+from src.commands.iterator import CommandCollection
+from src.commands.macro_commands import MacroCommand
 from src.exceptions import CommandExceptionError
-from src.macro_command import MacroCommand
 
 
 class TestMacroCommand:
@@ -14,8 +13,9 @@ class TestMacroCommand:
     def test_command_with_exception(
         self,
         move_command: Mock,
+        check_fuel_command: Mock,
         burn_fuel_command: Mock,
-        get_exception_commands: List[CommandInterface]
+        get_exception_commands: CommandCollection
     ) -> None:
         """Тестируем макрокоманду с инициализацией исключения"""
         macro_command = MacroCommand(commands=get_exception_commands)
@@ -23,10 +23,15 @@ class TestMacroCommand:
         with pytest.raises(CommandExceptionError) as exc_info:
             macro_command.execute()
 
+        assert check_fuel_command.fueled.get_remaining_fuel.called is True
+        assert check_fuel_command.fueled.get_remaining_fuel.call_count == 1
+
         assert move_command.movable.set_position.called is True
         assert move_command.movable.set_position.call_count == 1
+
         assert burn_fuel_command.fueled.set_fuel.called is True
         assert burn_fuel_command.fueled.set_fuel.call_count == 1
+
         assert exc_info.typename == "CommandExceptionError"
         assert str(exc_info.value) == "Stop macro command"
 
@@ -36,7 +41,7 @@ class TestMacroCommand:
         rotate_command: Mock,
         burn_fuel_command: Mock,
         check_fuel_command: Mock,
-        get_execute_commands: List[CommandInterface]
+        get_execute_commands: CommandCollection
     ) -> None:
         """Запуск макрокоманды"""
 

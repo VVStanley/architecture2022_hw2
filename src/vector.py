@@ -37,6 +37,10 @@ class Vector(VectorInterface):
             return self.x == other.x and self.y == other.y
         raise ObjectIsNotVectorTypeError
 
+    def __str__(self) -> str:
+        """Строковое представление"""
+        return f"(x: {self.x}, y: {self.y})"
+
     @classmethod
     def plus(cls, vector1: 'Vector', vector2: 'Vector') -> 'Vector':
         """Проверка векторов перед сложением"""

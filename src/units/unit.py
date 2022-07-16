@@ -1,18 +1,17 @@
-from abc import ABCMeta
-
-from src.vector import Vector
+from typing import Any
 
 
-class UnitInterface(metaclass=ABCMeta):
+class Unit:
+    """Боевая еденица"""
 
-    @property
-    def position(self) -> Vector:
-        return NotImplemented
+    def __str__(self) -> str:
+        """Строковое представление"""
+        prefix = "Unit:"
+        name = "unknown fighter"
+        if hasattr(self, "name"):
+            name = str(self.name)  # type: ignore
+        return f"{prefix} {name}"
 
-    @position.setter
-    def position(self, vector: Vector) -> None:
-        raise NotImplementedError
-
-    @property
-    def velocity(self) -> Vector:
-        return NotImplemented
+    def __setattr__(self, key: str, value: Any) -> None:
+        """Устанавливаем атрибут при обращении"""
+        self.__dict__[key] = value
