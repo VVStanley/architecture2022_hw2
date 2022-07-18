@@ -19,10 +19,8 @@ class TestMoveBurnFuelCommand:
             command.execute()
             command.execute()
 
-        assert exc_info.typename == "CommandExceptionError"
-        assert str(exc_info.value) == (
-            "Stop unit with error: Ran out of fuel for unit"
-        )
+        assert exc_info.typename == "MoveBurnFuelCommandError"
+        assert str(exc_info.value) == "Ran out of fuel for unit"
 
     def test_collection(self, unit_space_ship: Unit) -> None:
         """Проверим коллекцию у команды"""

@@ -35,7 +35,7 @@ class Rotable(RotableInterface):
         return getattr(self.unit, 'direction')
 
     def get_direction_number(self) -> int:
-        return getattr(self.unit, 'direction_number')
+        return getattr(self.unit, 'direction_numbers')
 
     def get_angular_velocity(self) -> int:
         return getattr(self.unit, 'angular_velocity')

@@ -34,10 +34,10 @@ class Movable(MovableInterface):
 
     def get_velocity(self) -> Vector:
         d: int = getattr(self.unit, "direction")
-        n: int = getattr(self.unit, "directions_number")
+        n: int = getattr(self.unit, "direction_numbers")
         v: int = getattr(self.unit, "velocity")
         return Vector(
-            v * math.cos(d / 360 * n), v * math.sin(d / 360 * n)
+            round(v * math.cos(d / 360 * n)), round(v * math.sin(d / 360 * n))
         )
 
     def set_position(self, vector: Vector) -> None:

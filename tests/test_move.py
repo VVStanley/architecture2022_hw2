@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from src.exceptions import ObjectIsNotVectorTypeError
+from src.exceptions import MoveCommandError
 from src.move.move import MoveCommand
 from src.vector import Vector
 
@@ -21,11 +21,11 @@ class TestMoveObject:
 
         move = MoveCommand(movable)
 
-        with pytest.raises(ObjectIsNotVectorTypeError) as exc_info:
+        with pytest.raises(MoveCommandError) as exc_info:
             move.execute()
 
-        assert exc_info.typename == "ObjectIsNotVectorTypeError"
-        assert str(exc_info.value) == "Type must be Vector"
+        assert exc_info.typename == "MoveCommandError"
+        assert str(exc_info.value) == "Unit cannot move"
 
     def test_move_velocity_none(self) -> None:
         """Попытка сдвинуть объект, у которого невозможно изменить
@@ -37,11 +37,11 @@ class TestMoveObject:
 
         move = MoveCommand(movable)
 
-        with pytest.raises(ObjectIsNotVectorTypeError) as exc_info:
+        with pytest.raises(MoveCommandError) as exc_info:
             move.execute()
 
-        assert exc_info.typename == "ObjectIsNotVectorTypeError"
-        assert str(exc_info.value) == "Type must be Vector"
+        assert exc_info.typename == "MoveCommandError"
+        assert str(exc_info.value) == "Unit cannot move"
 
     def test_move_object(self) -> None:
         """Тестируем команду движения
@@ -61,4 +61,4 @@ class TestMoveObject:
         args, kwargs = movable.set_position.call_args_list[0]
 
         # Проверяем что set_position вызван с правильным аргументом
-        assert args[0] == Vector(5, 8)
+        assert kwargs.get('vector') == Vector(5, 8)

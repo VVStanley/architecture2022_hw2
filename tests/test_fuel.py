@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from src.exceptions import CommandExceptionError
+from src.exceptions import CheckFuelCommandError
 from src.fuel.fuel import BurnFuelCommand, CheckFuelCommand
 
 
@@ -31,6 +31,7 @@ class TestFueled:
         fueled = Mock()
 
         fueled.get_remaining_fuel = MagicMock(return_value=25)
+        fueled.get_consumption_fuel = MagicMock(return_value=2)
 
         check_fuel = CheckFuelCommand(fueled)
 
@@ -43,11 +44,12 @@ class TestFueled:
         fueled = Mock()
 
         fueled.get_remaining_fuel = MagicMock(return_value=0)
+        fueled.get_consumption_fuel = MagicMock(return_value=2)
 
         check_fuel = CheckFuelCommand(fueled)
 
-        with pytest.raises(CommandExceptionError) as exc_info:
+        with pytest.raises(CheckFuelCommandError) as exc_info:
             check_fuel.execute()
 
-        assert exc_info.typename == "CommandExceptionError"
+        assert exc_info.typename == "CheckFuelCommandError"
         assert str(exc_info.value) == "Ran out of fuel for unit"

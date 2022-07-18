@@ -14,5 +14,5 @@ class MacroCommand(CommandInterface):
         for command in self.commands:
             try:
                 command.execute()
-            except Exception:
-                raise CommandExceptionError("Stop macro command")
+            except CommandExceptionError as e:
+                raise type(e)()

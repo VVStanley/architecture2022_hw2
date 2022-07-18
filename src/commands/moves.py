@@ -1,10 +1,15 @@
 from src.commands.iterator import CommandCollection
 from src.design_patterns.command import CommandInterface
-from src.exceptions import CommandExceptionError
+from src.exceptions import (
+    CommandExceptionError, MoveBurnFuelCommandError,
+    RotateBurnFuelCommandError,
+)
 from src.fuel.fuel import BurnFuelCommand, CheckFuelCommand
 from src.fuel.fueled import Fueled
 from src.move.movable import Movable
 from src.move.move import MoveCommand
+from src.rotate.rotable import Rotable
+from src.rotate.rotate import RotateCommand
 from src.units.unit import Unit
 
 
@@ -22,5 +27,23 @@ class MoveBurnFuelCommand(CommandInterface):
         for command in self.collection:
             try:
                 command.execute()
-            except Exception as e:
-                raise CommandExceptionError(f"Stop unit with error: {e}")
+            except CommandExceptionError as e:
+                raise MoveBurnFuelCommandError(str(e))
+
+
+class RotateBurnFuelCommand(CommandInterface):
+    """Поворот с расходом топлива"""
+
+    def __init__(self, unit: Unit) -> None:
+        self.collection = CommandCollection()
+        self.collection.add_item(CheckFuelCommand(Fueled(unit=unit)))
+        self.collection.add_item(RotateCommand(Rotable(unit=unit)))
+        self.collection.add_item(BurnFuelCommand(Fueled(unit=unit)))
+
+    def execute(self) -> None:
+        """Выполняем поворот с расходом топлива"""
+        for command in self.collection:
+            try:
+                command.execute()
+            except CommandExceptionError as e:
+                raise RotateBurnFuelCommandError(str(e))

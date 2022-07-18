@@ -1,4 +1,5 @@
 from src.design_patterns.command import CommandInterface
+from src.exceptions import MoveCommandError, ObjectIsNotVectorTypeError
 from src.move.movable import MovableInterface
 from src.vector import Vector
 
@@ -11,11 +12,13 @@ class MoveCommand(CommandInterface):
 
     def execute(self) -> None:
         """Перемещаем объект"""
-        self.movable.set_position(
-            Vector.plus(
+        try:
+            vector = Vector.plus(
                 self.movable.get_position(), self.movable.get_velocity()
             )
-        )
+        except ObjectIsNotVectorTypeError:
+            raise MoveCommandError
+        self.movable.set_position(vector=vector)
 
 
 """

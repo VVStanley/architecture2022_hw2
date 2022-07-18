@@ -32,8 +32,8 @@ class TestMacroCommand:
         assert burn_fuel_command.fueled.set_fuel.called is True
         assert burn_fuel_command.fueled.set_fuel.call_count == 1
 
-        assert exc_info.typename == "CommandExceptionError"
-        assert str(exc_info.value) == "Stop macro command"
+        assert exc_info.typename == "CheckFuelCommandError"
+        assert str(exc_info.value) == ("Ran out of fuel for unit")
 
     def test_command_ok(
         self,

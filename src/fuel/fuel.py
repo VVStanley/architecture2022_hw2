@@ -1,5 +1,5 @@
 from src.design_patterns.command import CommandInterface
-from src.exceptions import CommandExceptionError
+from src.exceptions import CheckFuelCommandError
 from src.fuel.fueled import FueledInterface
 
 
@@ -25,5 +25,8 @@ class CheckFuelCommand(CommandInterface):
 
     def execute(self) -> None:
         """Проверка осталось ли топливо"""
-        if self.fueled.get_remaining_fuel() <= 0:
-            raise CommandExceptionError("Ran out of fuel for unit")
+        remaining_fuel = self.fueled.get_remaining_fuel()
+        consumption_fuel = self.fueled.get_consumption_fuel()
+
+        if remaining_fuel <= consumption_fuel:
+            raise CheckFuelCommandError

@@ -19,9 +19,10 @@ def unit_space_ship() -> Unit:
     return create_unit(
         remaining_fuel=5,
         consumption_fuel=2,
+        angular_velocity=1,
         position=Vector(1, 1),
         direction=1,
-        directions_number=1,
+        direction_numbers=1,
         velocity=1,
     )
 
@@ -55,6 +56,7 @@ def burn_fuel_command() -> CommandInterface:
 def check_fuel_command() -> CommandInterface:
     fueled = Mock()
     fueled.get_remaining_fuel = MagicMock(return_value=25)
+    fueled.get_consumption_fuel = MagicMock(return_value=2)
     return CheckFuelCommand(fueled)
 
 
@@ -62,6 +64,7 @@ def check_fuel_command() -> CommandInterface:
 def check_fuel_command_with_exception() -> CommandInterface:
     fueled = Mock()
     fueled.get_remaining_fuel = MagicMock(return_value=0)
+    fueled.get_consumption_fuel = MagicMock(return_value=2)
     return CheckFuelCommand(fueled)
 
 
