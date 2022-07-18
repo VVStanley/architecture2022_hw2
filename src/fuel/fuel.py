@@ -1,6 +1,7 @@
 from src.design_patterns.command import CommandInterface
 from src.exceptions import CommandExceptionError
 from src.fuel.fueled import FueledInterface
+from src.injector import inject
 
 
 class BurnFuelCommand(CommandInterface):
@@ -20,6 +21,7 @@ class BurnFuelCommand(CommandInterface):
 class CheckFuelCommand(CommandInterface):
     """Команда проверки остатка топлива"""
 
+    @inject
     def __init__(self, fueled: FueledInterface) -> None:
         self.fueled = fueled
 

@@ -42,3 +42,6 @@ def start() -> None:
     print_unit(unit)
 
     print("STOP GAME")
+
+
+start()
