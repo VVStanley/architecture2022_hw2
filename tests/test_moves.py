@@ -1,9 +1,9 @@
 import pytest
 
 from src.commands.moves import MoveBurnFuelCommand
-from src.exceptions import CommandExceptionError
+from src.exceptions.command import BaseCommandExceptionError
 from src.units.unit import Unit
-from src.vector import Vector
+from src.utils.vector import Vector
 
 
 class TestMoveBurnFuelCommand:
@@ -13,16 +13,14 @@ class TestMoveBurnFuelCommand:
         """Если топливо закончится, возникает исключение"""
         command = MoveBurnFuelCommand(unit=unit_space_ship)
 
-        with pytest.raises(CommandExceptionError) as exc_info:
+        with pytest.raises(BaseCommandExceptionError) as exc_info:
             command.execute()
             command.execute()
             command.execute()
             command.execute()
 
-        assert exc_info.typename == "CommandExceptionError"
-        assert str(exc_info.value) == (
-            "Stop unit with error: Ran out of fuel for unit"
-        )
+        assert exc_info.typename == "MoveBurnFuelCommandError"
+        assert str(exc_info.value) == "Ran out of fuel for unit"
 
     def test_collection(self, unit_space_ship: Unit) -> None:
         """Проверим коллекцию у команды"""

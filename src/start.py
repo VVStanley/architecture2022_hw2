@@ -1,44 +1,68 @@
-from src.examples import move_and_burn_fuel
-from src.units.unit import Unit
-from src.vector import Vector
+from collections import deque
 
+from src.commands.loggers import LogCommand
+from src.commands.moves import MoveBurnFuelCommand, RotateBurnFuelCommand
+from src.design_patterns.command import CommandInterface
+from src.exceptions.command import BaseCommandExceptionError
+from src.exceptions.handler import ExceptionHandle
+from src.exceptions.repeater import (
+    BaseRepeaterExceptionError,
+    OneRepeaterError,
+)
+from src.helpers import create_unit, print_unit
+from src.utils.vector import Vector
 
-def create_unit(**kwargs) -> Unit:  # type: ignore
-    """Создание юнита"""
-    unit = Unit()
-    unit.name = kwargs.get("name", "Warship hero")
-    unit.remaining_fuel = kwargs.get("remaining_fuel")
-    unit.consumption_fuel = kwargs.get("consumption_fuel")
-    unit.position = kwargs.get("position")
-    unit.direction = kwargs.get("direction")
-    unit.directions_number = kwargs.get("directions_number")
-    unit.velocity = kwargs.get("velocity")
-    return unit
-
-
-def print_unit(unit: Unit) -> None:
-    """Показать в консоле юнита"""
-    print(unit)
-    [print(attr, value) for attr, value in vars(unit).items()]
-    print("--------------")
+queue: deque = deque()
 
 
 def start() -> None:
-    print("START GAME\n")
-
+    """Старт игры"""
     unit = create_unit(
-        remaining_fuel=400,
-        consumption_fuel=1,
+        remaining_fuel=10,
+        consumption_fuel=3,
         position=Vector(1, 2),
-        direction=1,
-        directions_number=1,
-        velocity=1,
+        direction=7,
+        angular_velocity=1,
+        direction_numbers=8,
+        velocity=9
     )
 
+    print("START GAME\n")
     print_unit(unit)
 
-    move_and_burn_fuel(unit=unit)
+    mcommand: CommandInterface = MoveBurnFuelCommand(unit=unit)
+    rcommand: CommandInterface = RotateBurnFuelCommand(unit=unit)
+
+    queue.append(mcommand)
+    queue.append(mcommand)
+    queue.append(mcommand)
+    queue.append(mcommand)
+    queue.append(rcommand)
+    queue.append(rcommand)
+    queue.append(rcommand)
+    queue.append(rcommand)
+    queue.append(rcommand)
+
+    while queue:
+        command: CommandInterface = queue.popleft()
+        try:
+            command.execute()
+            print(f"Выполнена: {command}, команд осталось - {len(queue)}")
+
+        except OneRepeaterError as e:
+            print(f"Залогировано: {str(e)}")
+            lcommand = LogCommand(str(e))
+            queue.appendleft(lcommand)
+
+        except BaseRepeaterExceptionError:
+            pass
+
+        except BaseCommandExceptionError:
+            handler = ExceptionHandle(command, queue)
+            handler.handle(2)
 
     print_unit(unit)
-
     print("STOP GAME")
+
+
+start()
