@@ -1,8 +1,8 @@
 """Тестирование модуля vector"""
 import pytest
 
-from src.exceptions import ObjectIsNotVectorTypeError
-from src.vector import Vector
+from src.exceptions.vector import ObjectIsNotVectorTypeError
+from src.utils.vector import Vector
 
 
 class TestVector:

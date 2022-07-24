@@ -2,7 +2,7 @@ import math
 from abc import ABCMeta, abstractmethod
 
 from src.units.unit import Unit
-from src.vector import Vector
+from src.utils.vector import Vector
 
 
 class MovableInterface(metaclass=ABCMeta):
@@ -34,10 +34,10 @@ class Movable(MovableInterface):
 
     def get_velocity(self) -> Vector:
         d: int = getattr(self.unit, "direction")
-        n: int = getattr(self.unit, "directions_number")
+        n: int = getattr(self.unit, "direction_numbers")
         v: int = getattr(self.unit, "velocity")
         return Vector(
-            v * math.cos(d / 360 * n), v * math.sin(d / 360 * n)
+            round(v * math.cos(d / 360 * n)), round(v * math.sin(d / 360 * n))
         )
 
     def set_position(self, vector: Vector) -> None:

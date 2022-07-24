@@ -16,6 +16,11 @@ class CommandIterator(Iterator):
     def __init__(
         self, commands: List[CommandInterface], reverse: bool = False
     ) -> None:
+        """Инициализация
+
+        :param commands: коллекция комманд для итерирования
+        :param reverse: направление итерирования
+        """
         self._commands = commands
         self._reverse = reverse
         self._position = -1 if reverse else 0
@@ -56,5 +61,8 @@ class CommandCollection(Iterable):
         return CommandIterator(self._commands, True)
 
     def add_item(self, command: CommandInterface) -> None:
-        """Добавление элемента в коллекцию"""
+        """Добавление элемента в коллекцию
+
+        :param command: команда для добаления в коллекцию
+        """
         self._commands.append(command)
