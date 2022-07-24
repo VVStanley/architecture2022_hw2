@@ -1,5 +1,5 @@
 from src.design_patterns.command import CommandInterface
-from src.exceptions import CheckFuelCommandError
+from src.exceptions.command import CheckFuelCommandError
 from src.fuel.fueled import FueledInterface
 
 

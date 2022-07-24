@@ -4,7 +4,7 @@ import pytest
 
 from src.commands.iterator import CommandCollection
 from src.commands.macro_commands import MacroCommand
-from src.exceptions import CommandExceptionError
+from src.exceptions.command import BaseCommandExceptionError
 
 
 class TestMacroCommand:
@@ -20,7 +20,7 @@ class TestMacroCommand:
         """Тестируем макрокоманду с инициализацией исключения"""
         macro_command = MacroCommand(commands=get_exception_commands)
 
-        with pytest.raises(CommandExceptionError) as exc_info:
+        with pytest.raises(BaseCommandExceptionError) as exc_info:
             macro_command.execute()
 
         assert check_fuel_command.fueled.get_remaining_fuel.called is True

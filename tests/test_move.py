@@ -3,9 +3,9 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from src.exceptions import MoveCommandError
+from src.exceptions.command import MoveCommandError
 from src.move.move import MoveCommand
-from src.vector import Vector
+from src.utils.vector import Vector
 
 
 class TestMoveObject:

@@ -10,7 +10,7 @@ from src.move.move import MoveCommand
 from src.rotate.rotate import RotateCommand
 from src.start import create_unit
 from src.units.unit import Unit
-from src.vector import Vector
+from src.utils.vector import Vector
 
 
 @pytest.fixture

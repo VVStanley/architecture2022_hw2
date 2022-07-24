@@ -1,12 +1,16 @@
 from src.commands.iterator import CommandCollection
 from src.design_patterns.command import CommandInterface
-from src.exceptions import CommandExceptionError
+from src.exceptions.command import BaseCommandExceptionError
 
 
 class MacroCommand(CommandInterface):
     """Простейшая макрокоманда"""
 
     def __init__(self, commands: CommandCollection) -> None:
+        """Инициализация
+
+        :param commands: коллекция комманд для выполнения
+        """
         self.commands = commands
 
     def execute(self) -> None:
@@ -14,5 +18,5 @@ class MacroCommand(CommandInterface):
         for command in self.commands:
             try:
                 command.execute()
-            except CommandExceptionError as e:
+            except BaseCommandExceptionError as e:
                 raise type(e)()

@@ -1,7 +1,8 @@
 from src.design_patterns.command import CommandInterface
-from src.exceptions import MoveCommandError, ObjectIsNotVectorTypeError
+from src.exceptions.command import MoveCommandError
+from src.exceptions.vector import ObjectIsNotVectorTypeError
 from src.move.movable import MovableInterface
-from src.vector import Vector
+from src.utils.vector import Vector
 
 
 class MoveCommand(CommandInterface):
@@ -19,14 +20,3 @@ class MoveCommand(CommandInterface):
         except ObjectIsNotVectorTypeError:
             raise MoveCommandError
         self.movable.set_position(vector=vector)
-
-
-"""
-ДЗ по командам:
-
-5.Реализовать команду для модификации вектора мгновенной скорости при повороте
-Необходимо учесть, что не каждый разворачивающийся объект движется.
-6.Реализовать команду поворота, которая еще и меняет вектор мгновенной скорости
-если есть.
-"""
-# TODO: 5 и 6 пункты не понятны совсем, уточнить

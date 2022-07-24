@@ -2,13 +2,15 @@ from collections import deque
 
 from src.commands.loggers import LogCommand
 from src.commands.moves import MoveBurnFuelCommand, RotateBurnFuelCommand
-from src.commands.repeater import OneRepeatCommand, TwoRepeatCommand
-from src.exceptions import (
-    OneRepeaterCommandError, TwoRepeaterCommandError,
+from src.design_patterns.command import CommandInterface
+from src.exceptions.command import BaseCommandExceptionError
+from src.exceptions.handler import ExceptionHandle
+from src.exceptions.repeater import (
+    BaseRepeaterExceptionError,
+    OneRepeaterError,
 )
 from src.helpers import create_unit, print_unit
-from src.utils.exception import can_handle, handle_exception
-from src.vector import Vector
+from src.utils.vector import Vector
 
 queue: deque = deque()
 
@@ -28,8 +30,8 @@ def start() -> None:
     print("START GAME\n")
     print_unit(unit)
 
-    mcommand = MoveBurnFuelCommand(unit=unit)
-    rcommand = RotateBurnFuelCommand(unit=unit)
+    mcommand: CommandInterface = MoveBurnFuelCommand(unit=unit)
+    rcommand: CommandInterface = RotateBurnFuelCommand(unit=unit)
 
     queue.append(mcommand)
     queue.append(mcommand)
@@ -42,27 +44,22 @@ def start() -> None:
     queue.append(rcommand)
 
     while queue:
-        command = queue.popleft()
+        command: CommandInterface = queue.popleft()
         try:
             command.execute()
+            print(f"Выполнена: {command}, команд осталось - {len(queue)}")
 
-        except OneRepeaterCommandError as e:
-            # TODO: Когда отрабатывает OneRepeatCommand
-            #  мы не хнаем какая команда исполнялась
-            if can_handle(e.__class__.__name__):
-                repeatcommand = handle_exception.get(e.__class__.__name__)
-                repeater = TwoRepeatCommand(repeatcommand(unit=unit))
-                queue.appendleft(repeater)
-
-        except TwoRepeaterCommandError as e:
+        except OneRepeaterError as e:
+            print(f"Залогировано: {str(e)}")
             lcommand = LogCommand(str(e))
             queue.appendleft(lcommand)
 
-        except Exception as e:
-            if can_handle(e.__class__.__name__):
-                repeatcommand = handle_exception.get(e.__class__.__name__)
-                repeater = OneRepeatCommand(repeatcommand(unit=unit))
-                queue.appendleft(repeater)
+        except BaseRepeaterExceptionError:
+            pass
+
+        except BaseCommandExceptionError:
+            handler = ExceptionHandle(command, queue)
+            handler.handle(2)
 
     print_unit(unit)
     print("STOP GAME")

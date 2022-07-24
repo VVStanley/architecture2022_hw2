@@ -2,7 +2,7 @@ import math
 from abc import ABCMeta, abstractmethod
 
 from src.units.unit import Unit
-from src.vector import Vector
+from src.utils.vector import Vector
 
 
 class MovableInterface(metaclass=ABCMeta):

@@ -1,6 +1,8 @@
 from src.design_patterns.command import CommandInterface
-from src.exceptions import (
-    CommandExceptionError, OneRepeaterCommandError, TwoRepeaterCommandError,
+from src.exceptions.command import BaseCommandExceptionError
+from src.exceptions.repeater import (
+    OneRepeaterError, ThreeRepeaterError,
+    TwoRepeaterError,
 )
 
 
@@ -14,8 +16,8 @@ class OneRepeatCommand(CommandInterface):
         """Выполняем команду"""
         try:
             self.command.execute()
-        except CommandExceptionError as e:
-            raise OneRepeaterCommandError(str(e))
+        except BaseCommandExceptionError as e:
+            raise OneRepeaterError(str(e))
 
 
 class TwoRepeatCommand(CommandInterface):
@@ -28,5 +30,19 @@ class TwoRepeatCommand(CommandInterface):
         """Выполняем команду"""
         try:
             self.command.execute()
-        except CommandExceptionError as e:
-            raise TwoRepeaterCommandError(str(e))
+        except BaseCommandExceptionError as e:
+            raise TwoRepeaterError(str(e))
+
+
+class ThreeRepeatCommand(CommandInterface):
+    """Команда выполняет комманду"""
+
+    def __init__(self, command: CommandInterface) -> None:
+        self.command = command
+
+    def execute(self) -> None:
+        """Выполняем команду"""
+        try:
+            self.command.execute()
+        except BaseCommandExceptionError as e:
+            raise ThreeRepeaterError(str(e))

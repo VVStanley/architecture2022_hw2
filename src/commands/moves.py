@@ -1,8 +1,8 @@
 from src.commands.iterator import CommandCollection
 from src.design_patterns.command import CommandInterface
-from src.exceptions import (
-    CommandExceptionError, MoveBurnFuelCommandError,
-    RotateBurnFuelCommandError,
+from src.exceptions.command import (
+    BaseCommandExceptionError,
+    MoveBurnFuelCommandError, RotateBurnFuelCommandError,
 )
 from src.fuel.fuel import BurnFuelCommand, CheckFuelCommand
 from src.fuel.fueled import Fueled
@@ -17,6 +17,10 @@ class MoveBurnFuelCommand(CommandInterface):
     """Команда движения с расходом топлива"""
 
     def __init__(self, unit: Unit) -> None:
+        """Инициализация
+
+        :param unit: объект для передвижения
+        """
         self.collection = CommandCollection()
         self.collection.add_item(CheckFuelCommand(Fueled(unit=unit)))
         self.collection.add_item(MoveCommand(Movable(unit=unit)))
@@ -27,7 +31,7 @@ class MoveBurnFuelCommand(CommandInterface):
         for command in self.collection:
             try:
                 command.execute()
-            except CommandExceptionError as e:
+            except BaseCommandExceptionError as e:
                 raise MoveBurnFuelCommandError(str(e))
 
 
@@ -35,6 +39,10 @@ class RotateBurnFuelCommand(CommandInterface):
     """Поворот с расходом топлива"""
 
     def __init__(self, unit: Unit) -> None:
+        """Инициализация
+
+        :param unit: объект для поворота
+        """
         self.collection = CommandCollection()
         self.collection.add_item(CheckFuelCommand(Fueled(unit=unit)))
         self.collection.add_item(RotateCommand(Rotable(unit=unit)))
@@ -45,5 +53,5 @@ class RotateBurnFuelCommand(CommandInterface):
         for command in self.collection:
             try:
                 command.execute()
-            except CommandExceptionError as e:
+            except BaseCommandExceptionError as e:
                 raise RotateBurnFuelCommandError(str(e))
