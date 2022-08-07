@@ -9,29 +9,22 @@ from src.exceptions.repeater import (
     BaseRepeaterExceptionError,
     OneRepeaterError,
 )
-from src.helpers import create_unit, print_unit
-from src.utils.vector import Vector
+from src.helpers import print_unit
+from src.injector import container
 
 queue: deque = deque()
 
 
 def start() -> None:
     """Старт игры"""
-    unit = create_unit(
-        remaining_fuel=10,
-        consumption_fuel=3,
-        position=Vector(1, 2),
-        direction=7,
-        angular_velocity=1,
-        direction_numbers=8,
-        velocity=9
-    )
+
+    unit = container.resolve('Unit')
 
     print("START GAME\n")
     print_unit(unit)
 
-    mcommand: CommandInterface = MoveBurnFuelCommand(unit=unit)
-    rcommand: CommandInterface = RotateBurnFuelCommand(unit=unit)
+    mcommand: CommandInterface = MoveBurnFuelCommand()
+    rcommand: CommandInterface = RotateBurnFuelCommand()
 
     queue.append(mcommand)
     queue.append(mcommand)
