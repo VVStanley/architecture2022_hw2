@@ -2,18 +2,31 @@ import pytest
 
 from src.commands.moves import MoveBurnFuelCommand
 from src.exceptions.command import BaseCommandExceptionError
-from src.units.unit import Unit
-from src.utils.vector import Vector
+from src.injector import container
 
 
 class TestMoveBurnFuelCommand:
     """Тестируем команду движения по прямой с расходом топлива"""
 
-    def test_exceptions_check_fuel(self, unit_space_ship: Unit) -> None:
+    def test_ok(self) -> None:
+        """Проверка команды на выполнение"""
+
+        unit = container.resolve('Unit')
+        save_position = unit.position
+        calc_remaining_fuel = unit.remaining_fuel - unit.consumption_fuel
+
+        command = MoveBurnFuelCommand()
+        command.execute()
+
+        assert getattr(unit, "remaining_fuel") == calc_remaining_fuel
+        assert getattr(unit, "position") != save_position
+
+    def test_exceptions_check_fuel(self) -> None:
         """Если топливо закончится, возникает исключение"""
-        command = MoveBurnFuelCommand(unit=unit_space_ship)
+        command = MoveBurnFuelCommand()
 
         with pytest.raises(BaseCommandExceptionError) as exc_info:
+            command.execute()
             command.execute()
             command.execute()
             command.execute()
@@ -22,17 +35,8 @@ class TestMoveBurnFuelCommand:
         assert exc_info.typename == "MoveBurnFuelCommandError"
         assert str(exc_info.value) == "Ran out of fuel for unit"
 
-    def test_collection(self, unit_space_ship: Unit) -> None:
+    def test_collection(self) -> None:
         """Проверим коллекцию у команды"""
-        command = MoveBurnFuelCommand(unit=unit_space_ship)
+        command = MoveBurnFuelCommand()
 
         assert 3 == len(command.collection)
-
-    def test_ok(self, unit_space_ship: Unit) -> None:
-        """Проверка команды на выполнение"""
-
-        command = MoveBurnFuelCommand(unit=unit_space_ship)
-        command.execute()
-
-        assert getattr(unit_space_ship, "remaining_fuel") == 3
-        assert getattr(unit_space_ship, "position") != Vector(1, 1)

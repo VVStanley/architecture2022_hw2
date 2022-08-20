@@ -8,23 +8,7 @@ from src.design_patterns.command import CommandInterface
 from src.fuel.fuel import BurnFuelCommand, CheckFuelCommand
 from src.move.move import MoveCommand
 from src.rotate.rotate import RotateCommand
-from src.start import create_unit
-from src.units.unit import Unit
 from src.utils.vector import Vector
-
-
-@pytest.fixture
-def unit_space_ship() -> Unit:
-    """Возвращаем боевой корабль"""
-    return create_unit(
-        remaining_fuel=5,
-        consumption_fuel=2,
-        angular_velocity=1,
-        position=Vector(1, 1),
-        direction=1,
-        direction_numbers=1,
-        velocity=1,
-    )
 
 
 @pytest.fixture
