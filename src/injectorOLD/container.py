@@ -1,8 +1,57 @@
-from typing import Any, Dict, List
+import inspect
+from typing import Any, Dict, TypeVar
 
 from src.exceptions.injector import DependencyResolutionExceptionError
-from src.injectorNEW.constructor import Constructor
-from src.injectorNEW.scope import TECHNICAL_ARGUMENTS
+
+
+class Constructor:
+    """Конструктор для классов"""
+
+    def __init__(self, class_type: 'type') -> None:
+        """
+        :param class_type: Регистрируемый класс
+
+        argument_types - Аргументы регистрируемого класса
+        """
+        self.class_type = class_type
+        self.argument_types: Dict[str, 'type'] = {}
+
+        self.find_constructor()
+
+    def _find_constructor(self) -> TypeVar:
+        """Получение конструктора для класса"""
+
+        def isconstructor(obj: 'type') -> bool:
+            return inspect.isfunction(obj) and obj.__name__ == '__init__'
+
+        constructors = inspect.getmembers(
+            self.class_type, predicate=isconstructor
+        )
+
+        if constructors:
+            name, constructor = constructors[0]
+            return constructor
+
+        raise DependencyResolutionExceptionError(
+            f"The requested type {self.class_type.__name__}"
+            f" no explicit __init__ method"
+        )
+
+    @staticmethod
+    def _filter_annotations(annotations: dict) -> dict:
+        """Фильтруем аргументы, удаляем return как аннатацию"""
+        return {
+            arg_name: arg_type
+            for arg_name, arg_type in annotations.items()
+            if arg_name != 'return'
+        }
+
+    def find_constructor(self) -> None:
+        constructor = self._find_constructor()
+        if constructor is not None:
+            self.argument_types = self._filter_annotations(
+                constructor.__annotations__
+            )
 
 
 class Container:
@@ -36,21 +85,6 @@ class Container:
                     f" must be {arg_type}"
                 )
 
-    def _check_arguments_for_types(
-            self, class_name: str, argument_map: List[dict]
-    ) -> None:
-        """Проверяем аргументы для объекта объявленные в scope"""
-        constructor: Constructor = self.registry_map.get(class_name)
-        for arguments in argument_map:
-            arguments_filter = {
-                key: value for key, value in arguments.items()
-                if key not in TECHNICAL_ARGUMENTS
-            }
-            self._check_arguments(
-                argument_map=arguments_filter,
-                argument_types=constructor.argument_types
-            )
-
     def _get_arguments_type(self, argument_types: dict) -> dict:
         """Получаем аргументы из контейнера"""
         try:
@@ -66,30 +100,22 @@ class Container:
         """Создаем объекты"""
         argument_map: dict = {}
 
+        # Если есть инструкции в scope
+        if self.scope.get(class_name):
+            argument_map = self.scope.get(class_name, {})
+            self._check_arguments(argument_map, argument_types)
+
         # Если есть у класса аргументы
-        if argument_types:
+        elif argument_types:
             argument_map = self._get_arguments_type(argument_types)
 
         class_type = self.registry_map[class_name].class_type
         self.storage[class_name] = class_type(**argument_map)
 
-    def _prepare_arguments(self, class_name: str, types_args: dict):
-        """Подготавливаем все необходимые аргументы"""
-
     def _initialization_types(self) -> None:
         """Инициализируем все зарегистрированные классы"""
-
-        # Сначала регистрируем классы из scope
-        for class_name, argument_map in self.scope.items():
-            self._check_arguments_for_types(class_name, argument_map)
-            a = 1
-
         for class_name, constructor in self.registry_map.items():
-            # Если есть инструкции в scope
-            if self.scope.get(class_name):
-                self._prepare_arguments(class_name, self.scope.get(class_name))
-            else:
-                self._create(class_name, constructor.argument_types)
+            self._create(class_name, constructor.argument_types)
 
     def resolve(self, class_name: str) -> Any:
         """Возвращаем созданный класс"""
@@ -99,3 +125,19 @@ class Container:
                 f"Class {class_name} not found in container"
             )
         return self.storage[class_name]
+
+
+class ContainerBuilder:
+    """Регистрируем классы и создаем контейнер"""
+
+    def __init__(self) -> None:
+        self.registry: Dict[str, Any] = {}
+
+    def register_class(self, class_type: 'type') -> None:
+        """Регистрация классов"""
+        constructor = Constructor(class_type)
+        self.registry[class_type.__name__] = constructor
+
+    def build(self, scope: dict) -> Container:
+        """Создаем контейнер"""
+        return Container(self.registry, scope)

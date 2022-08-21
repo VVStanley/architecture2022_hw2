@@ -2,7 +2,7 @@ import pytest
 
 from src.commands.moves import MoveBurnFuelCommand
 from src.exceptions.command import BaseCommandExceptionError
-from src.injector import container
+from src.injectorOLD import container
 
 
 class TestMoveBurnFuelCommand:

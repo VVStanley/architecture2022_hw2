@@ -1,79 +1,36 @@
-import inspect
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict
 
 from src.exceptions.injector import DependencyResolutionExceptionError
-
-
-class Constructor:
-    """Конструктор для классов"""
-
-    def __init__(self, class_type: 'type') -> None:
-        """
-        :param class_type: Регистрируемый класс
-
-        argument_types - Аргументы регистрируемого класса
-        """
-        self.class_type = class_type
-        self.argument_types: Dict[str, 'type'] = {}
-
-        self.find_constructor()
-
-    def _find_constructor(self) -> TypeVar:
-        """Получение конструктора для класса"""
-
-        def isconstructor(obj: 'type') -> bool:
-            return inspect.isfunction(obj) and obj.__name__ == '__init__'
-
-        constructors = inspect.getmembers(
-            self.class_type, predicate=isconstructor
-        )
-
-        if constructors:
-            name, constructor = constructors[0]
-            return constructor
-
-        raise DependencyResolutionExceptionError(
-            f"The requested type {self.class_type.__name__}"
-            f" no explicit __init__ method"
-        )
-
-    @staticmethod
-    def _filter_annotations(annotations: dict) -> dict:
-        """Фильтруем аргументы, удаляем return как аннатацию"""
-        return {
-            arg_name: arg_type
-            for arg_name, arg_type in annotations.items()
-            if arg_name != 'return'
-        }
-
-    def find_constructor(self) -> None:
-        constructor = self._find_constructor()
-        if constructor is not None:
-            self.argument_types = self._filter_annotations(
-                constructor.__annotations__
-            )
+from src.injector.constructor import Constructor
+from src.injector.fields import Field
+from src.injector.scope import get_scope, TechnicalArguments
 
 
 class Container:
     """IoC container"""
 
-    def __init__(self, registry_map: dict, scope: dict) -> None:
-        """
+    def __init__(self):
+        self.storage = {}  # Хранилище для инициализированных классов
+        self._name_scope = None  # Название scope
+        self._constructor = None
+        self._scope = None
 
-        :param registry_map: Словарь с конструкторами классов
-        :param scope: Словарь с аргументами для классов
-
-        storage - Хранилище для инициализированных классов
+    def register(self, name_scope: str, constructor: Constructor) -> None:
         """
-        self.registry_map = registry_map
-        self.scope = scope
-        self.storage: Dict[str, Any] = {}
+        :param constructor: Конструктор класса для инициализации объектов
+        :param name_scope: Название scope
+        """
+        self._name_scope = name_scope
+        self._constructor = constructor
+        self._scope = get_scope(self._name_scope)
+        self.storage[self._name_scope]: Dict[str, Any] = {}
         self._initialization_types()
 
-    @staticmethod
-    def _check_arguments(argument_map: dict, argument_types: dict) -> None:
-        """Проверяем аргументы в scope с аргументами в __init__ class_type"""
-        for arg_name, arg_type in argument_types.items():
+    def _check_arguments(self, argument_map: dict) -> None:
+        """Проверяем аргументы в scope """
+        for arg_name, arg_type in self._constructor.argument_types.items():
+            if arg_name == 'kwargs':
+                return
             if arg_name not in argument_map:
                 raise DependencyResolutionExceptionError(
                     f"Not found argument {arg_name} in scope"
@@ -85,59 +42,70 @@ class Container:
                     f" must be {arg_type}"
                 )
 
-    def _get_arguments_type(self, argument_types: dict) -> dict:
-        """Получаем аргументы из контейнера"""
-        try:
-            argument_map = {
-                arg_name: self.storage[arg_name.title()] for arg_name in
-                argument_types.keys()
-            }
-        except Exception as e:
-            raise DependencyResolutionExceptionError(str(e))
-        return argument_map
-
-    def _create(self, class_name: str, argument_types: dict) -> None:
-        """Создаем объекты"""
-        argument_map: dict = {}
-
-        # Если есть инструкции в scope
-        if self.scope.get(class_name):
-            argument_map = self.scope.get(class_name, {})
-            self._check_arguments(argument_map, argument_types)
-
-        # Если есть у класса аргументы
-        elif argument_types:
-            argument_map = self._get_arguments_type(argument_types)
-
-        class_type = self.registry_map[class_name].class_type
-        self.storage[class_name] = class_type(**argument_map)
+    @staticmethod
+    def _prepare_arguments(argument_map: dict) -> dict:
+        """Подготавливаем аргументы для инициализации"""
+        return {
+            key: value.value() if isinstance(value, Field) else value
+            for key, value in argument_map.items()
+        }
 
     def _initialization_types(self) -> None:
-        """Инициализируем все зарегистрированные классы"""
-        for class_name, constructor in self.registry_map.items():
-            self._create(class_name, constructor.argument_types)
+        """Стратегия инициализации объектов из scope"""
+        class_type = self._constructor.class_type
 
-    def resolve(self, class_name: str) -> Any:
-        """Возвращаем созданный класс"""
+        for arguments_map in self._scope:
 
-        if class_name not in self.storage:
+            filter_arguments = {
+                key: value for key, value in arguments_map.items()
+                if not isinstance(key, TechnicalArguments)
+            }
+
+            self._check_arguments(argument_map=filter_arguments)
+
+            # Создаем объекты из scope необходимое количество AMOUNT
+            for _ in range(arguments_map.get(TechnicalArguments.AMOUNT)):
+                arguments = self._prepare_arguments(
+                    argument_map=filter_arguments
+                )
+
+                self.storage[self._name_scope][arguments.get("id")] = (
+                    class_type(**arguments)
+                )
+
+    def _resolve_type(self, constructor: Constructor, obj: 'type') -> Any:
+        """Получаем необходимые аргументы рекурсивно и инициализируем класс"""
+        arguments = {}
+        for arg_name, arg_type in constructor.argument_types.items():
+            if arg_type == type(obj):
+                arguments.update({arg_name: obj})
+            else:
+                arguments.update({
+                    arg_name: self._resolve_type(
+                        constructor=self.storage[arg_name.title()], obj=obj
+                    )
+                })
+        return constructor.class_type(**arguments)
+
+    def resolve(
+            self, class_name: str, name_scope: str, obj_id: int
+    ) -> Any:
+        """Возвращаем созданный класс
+
+        :param class_name: Имя класса для инициализации
+        :param name_scope: Имя scope для поиска объекта
+        :param obj_id: ИД объекта из scope
+        """
+        if name_scope not in self.storage:
             raise DependencyResolutionExceptionError(
-                f"Class {class_name} not found in container"
+                f"Scope name {name_scope} not register in container"
             )
-        return self.storage[class_name]
+        if obj_id not in self.storage[name_scope]:
+            raise DependencyResolutionExceptionError(
+                f"Object with id:{obj_id} not found in scope:{name_scope}"
+            )
 
-
-class ContainerBuilder:
-    """Регистрируем классы и создаем контейнер"""
-
-    def __init__(self) -> None:
-        self.registry: Dict[str, Any] = {}
-
-    def register_class(self, class_type: 'type') -> None:
-        """Регистрация классов"""
-        constructor = Constructor(class_type)
-        self.registry[class_type.__name__] = constructor
-
-    def build(self, scope: dict) -> Container:
-        """Создаем контейнер"""
-        return Container(self.registry, scope)
+        return self._resolve_type(
+            constructor=self.storage[class_name],
+            obj=self.storage[name_scope][obj_id]
+        )

@@ -18,7 +18,7 @@ class ShootingInterface(metaclass=ABCMeta):
 
 class Shooting(ShootingInterface):
 
-    def __int__(self, unit: Unit) -> None:
+    def __init__(self, unit: Unit) -> None:
         self.unit = unit
 
     def check_bullets(self) -> bool:

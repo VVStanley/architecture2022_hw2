@@ -1,7 +1,7 @@
 from src.fuel.fuel import BurnFuelCommand, CheckFuelCommand
 from src.fuel.fueled import Fueled
-from src.injectorNEW import Container, ContainerBuilder
-from src.injectorNEW.scope import get_actual_scope
+from src.injectorOLD.container import Container, ContainerBuilder
+from src.injectorOLD.scope import get_actual_scope
 from src.move.movable import Movable
 from src.move.move import MoveCommand
 from src.rotate.rotable import Rotable

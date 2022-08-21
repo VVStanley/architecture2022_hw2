@@ -30,6 +30,19 @@ class CheckFuelCommandError(BaseCommandExceptionError):
         super().__init__(message)
 
 
+class CheckBulletsCommandError(BaseCommandExceptionError):
+    """Проверка наличия пуль"""
+
+    def __init__(self, message: str = None) -> None:
+        message = message if message else "Bullets ran out for unit"
+        super().__init__(message)
+
+
+class ShootCheckBulletCommandError(BaseCommandExceptionError):
+    """Проверка пуль и выстрел"""
+    pass
+
+
 class MoveBurnFuelCommandError(BaseCommandExceptionError):
     """Движение с расходом топлива"""
     pass
