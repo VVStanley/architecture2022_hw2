@@ -1,4 +1,4 @@
-from src.injector.register import container  # noqa:F401
+from src.injector.register import container  # noqa
 
 __all__ = (
     "container"

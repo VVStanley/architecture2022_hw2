@@ -1,6 +1,6 @@
 import pytest
 
-from src.commands.moves import MoveBurnFuelCommand
+from src.commands.actions import MoveBurnFuelCommand
 from src.exceptions.command import BaseCommandExceptionError
 from src.injector import container
 
@@ -11,11 +11,11 @@ class TestMoveBurnFuelCommand:
     def test_ok(self) -> None:
         """Проверка команды на выполнение"""
 
-        unit = container.resolve('Unit')
+        unit = container.storage.get("units", {}).get(11)
         save_position = unit.position
         calc_remaining_fuel = unit.remaining_fuel - unit.consumption_fuel
 
-        command = MoveBurnFuelCommand()
+        command = MoveBurnFuelCommand(11)
         command.execute()
 
         assert getattr(unit, "remaining_fuel") == calc_remaining_fuel
@@ -23,7 +23,7 @@ class TestMoveBurnFuelCommand:
 
     def test_exceptions_check_fuel(self) -> None:
         """Если топливо закончится, возникает исключение"""
-        command = MoveBurnFuelCommand()
+        command = MoveBurnFuelCommand(11)
 
         with pytest.raises(BaseCommandExceptionError) as exc_info:
             command.execute()
@@ -37,6 +37,6 @@ class TestMoveBurnFuelCommand:
 
     def test_collection(self) -> None:
         """Проверим коллекцию у команды"""
-        command = MoveBurnFuelCommand()
+        command = MoveBurnFuelCommand(11)
 
         assert 3 == len(command.collection)

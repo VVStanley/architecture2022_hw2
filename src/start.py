@@ -1,16 +1,14 @@
 from collections import deque
 
+from src.client import api_commands
+from src.commands import act
 from src.commands.loggers import LogCommand
-from src.commands.moves import MoveBurnFuelCommand, RotateBurnFuelCommand
-from src.design_patterns.command import CommandInterface
 from src.exceptions.command import BaseCommandExceptionError
 from src.exceptions.handler import ExceptionHandle
 from src.exceptions.repeater import (
     BaseRepeaterExceptionError,
     OneRepeaterError,
 )
-from src.helpers import print_unit
-from src.injector import container
 
 queue: deque = deque()
 
@@ -18,26 +16,14 @@ queue: deque = deque()
 def start() -> None:
     """Старт игры"""
 
-    unit = container.resolve('Unit')
-
     print("START GAME\n")
-    print_unit(unit)
 
-    mcommand: CommandInterface = MoveBurnFuelCommand()
-    rcommand: CommandInterface = RotateBurnFuelCommand()
-
-    queue.append(mcommand)
-    queue.append(mcommand)
-    queue.append(mcommand)
-    queue.append(mcommand)
-    queue.append(rcommand)
-    queue.append(rcommand)
-    queue.append(rcommand)
-    queue.append(rcommand)
-    queue.append(rcommand)
+    for api_command in api_commands:
+        command = act.get(api_command.get("command"))  # type: ignore
+        queue.append(command(api_command.get("id")))  # type: ignore
 
     while queue:
-        command: CommandInterface = queue.popleft()
+        command = queue.popleft()
         try:
             command.execute()
             print(f"Выполнена: {command}, команд осталось - {len(queue)}")
@@ -54,7 +40,6 @@ def start() -> None:
             handler = ExceptionHandle(command, queue)
             handler.handle(2)
 
-    print_unit(unit)
     print("STOP GAME")
 
 

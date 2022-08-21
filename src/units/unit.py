@@ -4,9 +4,9 @@ from typing import Any
 class Unit:
     """Боевая еденица"""
 
-    def __init__(self, fields: dict) -> None:
+    def __init__(self, **kwargs: dict) -> None:
         """Создаем юнита"""
-        for key, value in fields.items():
+        for key, value in kwargs.items():
             setattr(self, key, value)
 
     def __str__(self) -> str:

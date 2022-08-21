@@ -9,12 +9,12 @@ class MacroCommand(CommandInterface):
     def __init__(self, commands: CommandCollection) -> None:
         """Инициализация
 
-        :param commands: коллекция комманд для выполнения
+        :param commands: коллекция команд для выполнения
         """
         self.commands = commands
 
     def execute(self) -> None:
-        """Последовательное выполнение комманд"""
+        """Последовательное выполнение команд"""
         for command in self.commands:
             try:
                 command.execute()
