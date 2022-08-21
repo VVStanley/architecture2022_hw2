@@ -1,19 +1,18 @@
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 from src.exceptions.injector import DependencyResolutionExceptionError
 from src.injector.constructor import Constructor
 from src.injector.fields import Field
-from src.injector.scope import get_scope, TechnicalArguments
+from src.injector.scope import TechnicalArguments, get_scope
 
 
 class Container:
     """IoC container"""
 
-    def __init__(self):
-        self.storage = {}  # Хранилище для инициализированных классов
-        self._name_scope = None  # Название scope
-        self._constructor = None
-        self._scope = None
+    _constructor: Constructor
+    _scope: List[Dict[Union[str, TechnicalArguments], Any]]
+    _name_scope: str  # Название scope
+    storage: Dict[str, Any]
 
     def register(self, name_scope: str, constructor: Constructor) -> None:
         """
@@ -23,7 +22,7 @@ class Container:
         self._name_scope = name_scope
         self._constructor = constructor
         self._scope = get_scope(self._name_scope)
-        self.storage[self._name_scope]: Dict[str, Any] = {}
+        self.storage[self._name_scope] = {}
         self._initialization_types()
 
     def _check_arguments(self, argument_map: dict) -> None:
@@ -64,7 +63,7 @@ class Container:
             self._check_arguments(argument_map=filter_arguments)
 
             # Создаем объекты из scope необходимое количество AMOUNT
-            for _ in range(arguments_map.get(TechnicalArguments.AMOUNT)):
+            for _ in range(arguments_map.get(TechnicalArguments.AMOUNT, 0)):
                 arguments = self._prepare_arguments(
                     argument_map=filter_arguments
                 )

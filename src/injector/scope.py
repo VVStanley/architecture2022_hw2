@@ -1,6 +1,7 @@
 from enum import Enum
-from typing import List
+from typing import Any, Dict, List, Union
 
+from src.exceptions.injector import DependencyResolutionExceptionError
 from src.injector.fields import AutoIncrementField, AutoVectorField
 
 
@@ -41,6 +42,12 @@ scope = {
 }
 
 
-def get_scope(name_scope: str) -> List[dict]:
+def get_scope(
+        name_scope: str
+) -> List[Dict[Union[str, TechnicalArguments], Any]]:
     """Возвращаем настройки для игры"""
-    return scope.get(name_scope, {})
+    if name_scope in scope:
+        return scope.get(name_scope)  # type: ignore
+    raise DependencyResolutionExceptionError(
+        f"Name scope:{name_scope} not found"
+    )

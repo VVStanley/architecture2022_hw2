@@ -1,5 +1,5 @@
-from src.injector.register import container
+from src.injector.register import container  # noqa
 
 __all__ = (
-    'container'
+    "container"
 )

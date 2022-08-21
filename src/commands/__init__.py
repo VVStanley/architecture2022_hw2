@@ -1,4 +1,4 @@
-from src.commands.actions import act
+from src.commands.actions import act  # noqa
 
 __all__ = (
     "act"

@@ -16,5 +16,5 @@ class ContainerBuilder:
     def register_scope(self, name_scope: str, name_class: str) -> None:
         """Создаем Новые объекты в контейнере"""
         self.container.register(
-            name_scope, self.container.storage.get(name_class)
+            name_scope, self.container.storage.get(name_class)  # type: ignore
         )
