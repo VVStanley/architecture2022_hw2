@@ -12,7 +12,7 @@ class Container:
     _constructor: Constructor
     _scope: List[Dict[Union[str, TechnicalArguments], Any]]
     _name_scope: str  # Название scope
-    storage: Dict[str, Any]
+    storage: Dict[str, Any] = {}
 
     def register(self, name_scope: str, constructor: Constructor) -> None:
         """
