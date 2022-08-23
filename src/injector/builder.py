@@ -1,5 +1,6 @@
 from src.injector.constructor import Constructor
 from src.injector.container import Container
+from src.injector.generator import AdapterGenerator
 
 
 class ContainerBuilder:
@@ -7,6 +8,12 @@ class ContainerBuilder:
 
     def __init__(self) -> None:
         self.container = Container()
+
+    @staticmethod
+    def generate_adapter(interface: 'type') -> 'type':
+        """Генерируем и регистрируем адаптер по интерфейсу"""
+        generator = AdapterGenerator(interface)
+        return generator.resolve()
 
     def register_class(self, class_type: 'type') -> None:
         """Регистрация классов"""
