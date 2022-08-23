@@ -29,9 +29,9 @@ def start() -> None:
             print(f"Выполнена: {command}, команд осталось - {len(queue)}")
 
         except OneRepeaterError as e:
-            print(f"Залогировано: {str(e)}")
-            lcommand = LogCommand(str(e))
-            queue.appendleft(lcommand)
+            print(f"Логирование: {str(e)}")
+            log_command = LogCommand(str(e))
+            queue.appendleft(log_command)
 
         except BaseRepeaterExceptionError:
             pass
