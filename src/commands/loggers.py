@@ -1,4 +1,4 @@
-from logconf import logger
+from src.logconf import logger
 
 from src.design_patterns.command import CommandInterface
 

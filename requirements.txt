@@ -7,3 +7,13 @@ flake8-import-order
 pep8-naming
 mypy
 pytest-cov
+fastapi
+uvicorn
+pydantic
+python-dotenv
+SQLAlchemy
+alembic
+psycopg2
+python-jose==3.3.0
+passlib[bcrypt]
+python-multipart
