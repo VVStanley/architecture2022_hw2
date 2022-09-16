@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from db.database import Base
@@ -7,8 +7,9 @@ from db.database import Base
 class Fight(Base):
     __tablename__ = 'fights'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(32), primary_key=True, index=True)
     start = Column(DateTime(timezone=False), server_default=func.now())
+    token = Column(String(500), server_default="")
 
 
 class FightHistory(Base):
@@ -17,5 +18,5 @@ class FightHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     time = Column(DateTime(timezone=False), server_default=func.now())
 
-    fight_id = Column(Integer, ForeignKey('fights.id'), index=True)
-    fight = relationship('Fight', backref='users')
+    fight_id = Column(String, ForeignKey('fights.id'), index=True)
+    fight = relationship('Fight', backref='get_history')

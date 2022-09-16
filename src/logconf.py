@@ -1,6 +1,6 @@
 import logging.config
 
-from src.project.settings import LOG_DIR
+from project.settings import settings
 
 LOGGING = {
     "version": 1,
@@ -28,7 +28,7 @@ LOGGING = {
             "level": "INFO",
             "class": "logging.FileHandler",
             "formatter": "verbose",
-            "filename": f"{LOG_DIR}/logs/file.log"
+            "filename": f"{settings.LOG_DIR}/logs/file.log"
         }
     },
     "loggers": {

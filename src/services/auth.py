@@ -81,7 +81,7 @@ class AuthService:
             'nbf': now,
             'exp': now + timedelta(seconds=settings.jwt_expires_s),
             'sub': str(db_user_data.id),
-            'user': db_user_data.dict(),
+            'user': db_user_data.dict(exclude={'fight'}),
         }
         token = jwt.encode(
             payload,

@@ -13,5 +13,5 @@ class User(Base):
 
     ready_to_fight = Column(Boolean, default=False)
 
-    fight_id = Column(Integer, ForeignKey('fights.id'), index=True)
-    fight = relationship('Fight', backref='users')
+    fight_id = Column(String, ForeignKey('fights.id'), index=True)
+    fight = relationship('Fight', backref='get_users')

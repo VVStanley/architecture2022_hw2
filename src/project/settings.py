@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     jwt_secret: str = ""
     jwt_algorithm: str = "HS256"
-    jwt_expires_s: int = 7200
+    jwt_expires_s: int = 500600
 
     DB_USER: str = "postgres"
     DB_PASSWORD: str = "12345"

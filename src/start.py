@@ -43,4 +43,8 @@ def start() -> None:
     print("STOP GAME")
 
 
+# /uri/id_game
+
+# https://www.youtube.com/watch?v=mlDanE_-0mY&t=962s
+
 start()

@@ -50,6 +50,7 @@ def set_position(self, vector: Vector) -> None:  # type: ignore
 
 # Rotable
 
+
 def get_direction(self) -> int:  # type: ignore
     """Возвращает направление объекта"""
     return getattr(self.unit, 'direction')

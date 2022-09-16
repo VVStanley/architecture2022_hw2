@@ -29,6 +29,4 @@ builder.register_class(BurnFuelCommand)
 builder.register_class(CheckBulletsCommand)
 builder.register_class(ShootCommand)
 
-builder.register_scope(name_scope="units", name_class="Unit")
-
 container = builder.container

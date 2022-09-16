@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 from src.exceptions.injector import DependencyResolutionExceptionError
 from src.injector.constructor import Constructor
 from src.injector.fields import Field
-from src.injector.scope import TechnicalArguments, get_scope
+from src.injector.scope import TechnicalArguments
 
 
 class Container:
@@ -11,18 +11,21 @@ class Container:
 
     _constructor: Constructor
     _scope: List[Dict[Union[str, TechnicalArguments], Any]]
-    _name_scope: str  # Название scope
+    _fight_id: str  # ИД игры
     storage: Dict[str, Any] = {}
 
-    def register(self, name_scope: str, constructor: Constructor) -> None:
+    def register(
+        self, scope: List[dict], fight_id: str, constructor: Constructor
+    ) -> None:
         """
+        :param scope:
+        :param fight_id:
         :param constructor: Конструктор класса для инициализации объектов
-        :param name_scope: Название scope
         """
-        self._name_scope = name_scope
         self._constructor = constructor
-        self._scope = get_scope(self._name_scope)
-        self.storage[self._name_scope] = {}
+        self._scope = scope
+        self._fight_id = fight_id
+        self.storage[fight_id] = {}
         self._initialization_types()
 
     def _check_arguments(self, argument_map: dict) -> None:
@@ -63,12 +66,14 @@ class Container:
             self._check_arguments(argument_map=filter_arguments)
 
             # Создаем объекты из scope необходимое количество AMOUNT
-            for _ in range(arguments_map.get(TechnicalArguments.AMOUNT, 0)):
+            for _ in range(
+                    arguments_map.get(TechnicalArguments.AMOUNT.name, 0)
+            ):
                 arguments = self._prepare_arguments(
                     argument_map=filter_arguments
                 )
 
-                self.storage[self._name_scope][arguments.get("id")] = (
+                self.storage[self._fight_id][arguments.get("id")] = (
                     class_type(**arguments)
                 )
 
@@ -79,15 +84,21 @@ class Container:
             if arg_type == type(obj):
                 arguments.update({arg_name: obj})
             else:
-                arguments.update({
-                    arg_name: self._resolve_type(
-                        constructor=self.storage[arg_name.title()], obj=obj
-                    )
-                })
+                arguments.update(
+                    {
+                        arg_name: self._resolve_type(
+                            constructor=self.storage[arg_name.title()], obj=obj
+                        )
+                    }
+                )
         return constructor.class_type(**arguments)
 
+    def get_ships(self):
+        """Возвращаем корабли из контейнера"""
+        a = 1
+
     def resolve(
-            self, class_name: str, name_scope: str, obj_id: int
+        self, class_name: str, name_scope: str, obj_id: int
     ) -> Any:
         """Возвращаем созданный класс
 

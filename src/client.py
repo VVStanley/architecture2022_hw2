@@ -1,8 +1,8 @@
 """Команды поступающие с клиента"""
 
 api_commands = (
-    {"id": 9, "command": "MoveBurnFuelCommand"},
-    {"id": 2, "command": "RotateBurnFuelCommand"},
+    {"game": 1, "id": 9, "command": "MoveBurnFuelCommand"},
+    {"game": 2, "id": 2, "command": "RotateBurnFuelCommand"},
     {"id": 2, "command": "ShootCheckBulletCommand"},
     {"id": 2, "command": "MoveBurnFuelCommand"},
     {"id": 11, "command": "MoveBurnFuelCommand"},
