@@ -1,7 +1,7 @@
 from enum import Enum
+from random import randint
 from typing import Any, Dict, List, Union
 
-from src.exceptions.injector import DependencyResolutionExceptionError
 from src.injector.fields import AutoIncrementField, AutoVectorField
 
 
@@ -9,16 +9,19 @@ class TechnicalArguments(Enum):
     AMOUNT = "amount"
 
 
-scope = {
-    "units": [
+def get_scope(
+    amount_ship: int
+) -> List[Dict[Union[str, TechnicalArguments], Any]]:
+    """Возвращаем настройки для игры"""
+    return [
         {
-            TechnicalArguments.AMOUNT: 3,
+            TechnicalArguments.AMOUNT.name: randint(2, 6),
             "id": AutoIncrementField(),
             "name": "wall",
             "position": AutoVectorField()
         },
         {
-            TechnicalArguments.AMOUNT: 5,
+            TechnicalArguments.AMOUNT.name: randint(1, 3),
             "id": AutoIncrementField(),
             "name": "tower",
             "position": AutoVectorField(),
@@ -27,27 +30,16 @@ scope = {
             "direction_numbers": 8,
         },
         {
-            TechnicalArguments.AMOUNT: 4,
+            TechnicalArguments.AMOUNT.name: amount_ship,
             "id": AutoIncrementField(),
             "name": "ship",
-            "remaining_fuel": 15,
-            "consumption_fuel": 3,
+            "remaining_fuel": 500,
+            "consumption_fuel": 2,
             "position": AutoVectorField(),
             "direction": 7,
             "angular_velocity": 1,
             "direction_numbers": 8,
-            "velocity": 9
+            "velocity": 9,
+            "bullets": 500
         }
-    ],
-}
-
-
-def get_scope(
-        name_scope: str
-) -> List[Dict[Union[str, TechnicalArguments], Any]]:
-    """Возвращаем настройки для игры"""
-    if name_scope in scope:
-        return scope.get(name_scope)  # type: ignore
-    raise DependencyResolutionExceptionError(
-        f"Name scope:{name_scope} not found"
-    )
+    ]

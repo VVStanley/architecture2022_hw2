@@ -27,7 +27,8 @@ class ShootCheckBulletCommand(CommandInterface):
             try:
                 command.execute()
             except BaseCommandExceptionError as e:
-                raise ShootCheckBulletCommandError(str(e))
+                break
+                # raise ShootCheckBulletCommandError(str(e))
 
 
 class MoveBurnFuelCommand(CommandInterface):
@@ -52,7 +53,8 @@ class MoveBurnFuelCommand(CommandInterface):
             try:
                 command.execute()
             except BaseCommandExceptionError as e:
-                raise MoveBurnFuelCommandError(str(e))
+                break
+                # raise MoveBurnFuelCommandError(str(e))
 
 
 class RotateBurnFuelCommand(CommandInterface):
@@ -77,7 +79,8 @@ class RotateBurnFuelCommand(CommandInterface):
             try:
                 command.execute()
             except BaseCommandExceptionError as e:
-                raise RotateBurnFuelCommandError(str(e))
+                break
+                # raise RotateBurnFuelCommandError(str(e))
 
 
 act = {
