@@ -20,22 +20,29 @@ async def websocket_endpoint(
     user_id: int,
     fight_service: FightService = Depends()
 ):
+    """Точка для обмена данными с агентом
+    :param websocket: Вебсокет соединения.
+    :param user_id: ИД пользователя с кем создаем соединение.
+    :param fight_service: Серывис для обработки битвы.
+    """
     await ws_manager.connect(user_id, websocket)
     try:
-
+        # При соединении отправляем информацию о всех активных игроках
         await ws_manager.send_personal_message(
             message=fight_service.get_fighters_message(),
             websocket=websocket
         )
         while True:
+            # Ожидаем команды
             data = await websocket.receive_text()
             data = json.loads(data)
+
+            # Проверяем токен битвы
             fight_id = fight_service.decode_token(data.get('token', ''))
+
+            # Получаем очередь для битвы и добавляем в нее команду
             queue = q_manager.get_queue(fight_id)
-
-            logger.info('ws --- ', data.get('step'))
             queue.put(data.get('step'))
-
             queue.join()
 
             container = builder.container
@@ -43,7 +50,7 @@ async def websocket_endpoint(
                 json.dumps(
                     [
                         get_model_by_name(unit.name).from_orm(unit).dict()
-                        for unit in container.storage.get("units").values()
+                        for unit in container.storage.get(fight_id).values()
                     ]
                 )
             )
