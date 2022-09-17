@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List
 
 from fastapi import WebSocket
@@ -30,14 +31,15 @@ class ConnectionManager:
         """Отправка сообщения на конкретный сокет"""
         await websocket.send_json(message)
 
-    async def broadcast(self, users_id: List[int], message: str) -> None:
+    async def broadcast(self, users_id: List[int], message: json) -> None:
         """ Отправка сообщений на несколько вебсокетов.
         :param users_id: ИД пользователей, которым будет отправлено сообщение.
         :param message: Сообщение.
         """
         for user_id in users_id:
-            connection = self.active_connections.get(user_id)
-            await connection.send_json(message)
+            connection = self.active_connections.get(int(user_id))
+            if connection:
+                await connection.send_json(message)
 
 
 ws_manager = ConnectionManager()

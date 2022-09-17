@@ -7,7 +7,7 @@ from injector.register import builder
 class FightThread(threading.Thread):
     """Поток для битвы"""
 
-    fight_id = threading.local()
+    fight_id = None
     container = threading.local()
 
     def __init__(self, queue, fight_id) -> None:

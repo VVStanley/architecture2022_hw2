@@ -92,6 +92,7 @@ class FightService:
         thread = FightThread(queue=queue, fight_id=fight_id)
         thread.start()
 
+        # Отправляем данные битвы агенту
         return GameToken(
             token=token,
             data=self.get_data_fight(fight_id)
