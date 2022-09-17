@@ -11,14 +11,14 @@ from src.injector import container
 class ShootCheckBulletCommand(CommandInterface):
     """Макрокоманда для выстрела"""
 
-    def __init__(self, obj_id: int) -> None:
+    def __init__(self, fight_id: str, obj_id: int) -> None:
         """Инициализация"""
         self.collection = CommandCollection()
         self.collection.add_item(
-            container.resolve("CheckBulletsCommand", "units", obj_id)
+            container.resolve("CheckBulletsCommand", fight_id, obj_id)
         )
         self.collection.add_item(
-            container.resolve("ShootCommand", "units", obj_id)
+            container.resolve("ShootCommand", fight_id, obj_id)
         )
 
     def execute(self) -> None:
@@ -34,17 +34,17 @@ class ShootCheckBulletCommand(CommandInterface):
 class MoveBurnFuelCommand(CommandInterface):
     """Макрокоманда движения с расходом топлива"""
 
-    def __init__(self, obj_id: int) -> None:
+    def __init__(self, fight_id: str, obj_id: int) -> None:
         """Инициализация"""
         self.collection = CommandCollection()
         self.collection.add_item(
-            container.resolve("CheckFuelCommand", "units", obj_id)
+            container.resolve("CheckFuelCommand", fight_id, obj_id)
         )
         self.collection.add_item(
-            container.resolve("MoveCommand", "units", obj_id)
+            container.resolve("MoveCommand", fight_id, obj_id)
         )
         self.collection.add_item(
-            container.resolve("BurnFuelCommand", "units", obj_id)
+            container.resolve("BurnFuelCommand", fight_id, obj_id)
         )
 
     def execute(self) -> None:
@@ -60,17 +60,17 @@ class MoveBurnFuelCommand(CommandInterface):
 class RotateBurnFuelCommand(CommandInterface):
     """Макрокоманда для поворота с расходом топлива"""
 
-    def __init__(self, obj_id: int) -> None:
+    def __init__(self, fight_id: str, obj_id: int) -> None:
         """Инициализация"""
         self.collection = CommandCollection()
         self.collection.add_item(
-            container.resolve("CheckFuelCommand", "units", obj_id)
+            container.resolve("CheckFuelCommand", fight_id, obj_id)
         )
         self.collection.add_item(
-            container.resolve("RotateCommand", "units", obj_id)
+            container.resolve("RotateCommand", fight_id, obj_id)
         )
         self.collection.add_item(
-            container.resolve("BurnFuelCommand", "units", obj_id)
+            container.resolve("BurnFuelCommand", fight_id, obj_id)
         )
 
     def execute(self) -> None:

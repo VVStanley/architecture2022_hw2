@@ -1,25 +1,40 @@
-from typing import Dict, List
+from typing import Dict
 
 from fastapi import WebSocket
 
 
 class ConnectionManager:
-    def __init__(self):
+    """Менеджер для работы с вебсокетами"""
+
+    def __init__(self) -> None:
         self.active_connections: Dict[int: WebSocket] = {}
 
-    async def connect(self, user_id: int, websocket: WebSocket):
+    async def connect(self, user_id: int, websocket: WebSocket) -> None:
+        """Создаем соединение с новым вебсокетом.
+        :param user_id: Ид пользователя для которого создано соединение.
+        :param websocket: websocket.
+        """
         await websocket.accept()
         self.active_connections.update({user_id: websocket})
 
-    def disconnect(self, user_id: int):
+    def disconnect(self, user_id: int) -> None:
+        """Закрываем соединение"""
         websocket = self.active_connections.pop(user_id, None)
         if websocket:
             websocket.close()
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
+    @staticmethod
+    async def send_personal_message(
+        message: str, websocket: WebSocket
+    ) -> None:
+        """Отправка сообщения на конкретный сокет"""
         await websocket.send_json(message)
 
-    async def broadcast(self, message: str):
+    async def broadcast(self, users, message: str) -> None:
+        """ Отправка сообщений на несколько вебсокетов.
+        :param users: Пользователи, которым будет отправлено сообщение.
+        :param message: Сообщение.
+        """
         for connection in self.active_connections.values():
             await connection.send_json(message)
 

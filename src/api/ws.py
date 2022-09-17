@@ -43,7 +43,7 @@ async def websocket_endpoint(
                 json.dumps(
                     [
                         get_model_by_name(unit.name).from_orm(unit).dict()
-                        for unit in container.storage.get("units").values()
+                        for unit in container.storage.get(fight_id).values()
                     ]
                 )
             )

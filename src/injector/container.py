@@ -93,10 +93,6 @@ class Container:
                 )
         return constructor.class_type(**arguments)
 
-    def get_ships(self):
-        """Возвращаем корабли из контейнера"""
-        a = 1
-
     def resolve(
         self, class_name: str, name_scope: str, obj_id: int
     ) -> Any:

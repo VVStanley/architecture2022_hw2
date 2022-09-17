@@ -4,12 +4,12 @@ from typing import Any, Dict, List
 
 from fastapi import Depends
 from jose import JWTError, jwt
+from loguru import logger
 from sqlalchemy.orm import Session
-
+from threading import Lock
 from db import db_Fight, db_User
 from db.database import get_session
 from exceptions.auth import CouldNotValidateCredantialError
-from injector import container
 from injector.register import builder
 from injector.scope import get_scope
 from models import Fighter, User
@@ -82,27 +82,31 @@ class FightService:
         self.session.commit()
         self.session.refresh(db_fight)
 
-        self._register_scope(len(ids), "units")
-        container = builder.container
+        self._register_scope(len(ids), fight_id)
 
         queue = q_manager.create_queue(fight_id=fight_id)
-        print(queue)
-        thread = FightThread(container=container, queue=queue)
+        thread = FightThread(queue=queue, fight_id=fight_id)
         thread.start()
 
         return GameToken(
             token=token,
-            data=[
-                get_model_by_name(unit.name).from_orm(unit).dict()
-                for unit in container.storage.get("units").values()
-            ]
+            data=self.get_data_fight(fight_id)
         )
 
     @staticmethod
-    def _register_scope(amount_users: int, unist_name: str):
+    def get_data_fight(fight_id: str) -> List[dict]:
+        """Возвращаем данные игры по ИД"""
+        container = builder.container
+        return [
+            get_model_by_name(unit.name).from_orm(unit).dict()
+            for unit in container.storage.get(fight_id).values()
+        ]
+
+    @staticmethod
+    def _register_scope(amount_users: int, fight_id: str):
         """Регистрируем scope для игры"""
         scope = get_scope(amount_ship=amount_users)
-        builder.register_scope(scope, unist_name, name_class="Unit")
+        builder.register_scope(scope, fight_id, name_class="Unit")
 
     def get_fighters_message(self) -> Dict[str, List[Any]]:
         """Возвращаем бойцов готовых к бою"""

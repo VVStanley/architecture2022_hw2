@@ -95,14 +95,15 @@ export default {
   methods: {
     async sendFakeStep() {
       console.log('send')
-      let ship = this.ships[Math.floor(Math.random() * this.ships.length)];
+      // let ship = this.ships[Math.floor(Math.random() * this.ships.length)];
+      let ship = this.ships[0];
       let command = this.commands[Math.floor(Math.random() * this.commands.length)];
-      console.log(ship)
+      console.log('command send - ', ship)
       let fakeCommand = {
         token: this.fight_data.token,
         step: {
           id: ship.id,
-          command
+          command: "MoveBurnFuelCommand"
         }
       }
       this.ws.send(JSON.stringify(fakeCommand))
@@ -122,7 +123,7 @@ export default {
             this.fight_data = data
 
             this.ships = this.fight_data.data.filter(item => item.name === "ship")
-            console.log(this.ships);
+            console.log('FIGHT CREATED -- ', this.ships);
 
           }
       ).catch(
