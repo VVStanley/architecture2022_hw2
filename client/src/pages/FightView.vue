@@ -6,8 +6,11 @@
   <ul>
     <li v-for="(field, key) in currentUser"> {{ key }}: {{ field }}</li>
   </ul>
-  <button v-if="currentUser.ready_to_fight" class="btn btn-warning"
-          v-on:click="readyToFight(false)">Хватит мочилова!
+  <button
+      v-if="currentUser.ready_to_fight" class="btn btn-warning"
+      v-on:click="readyToFight(false)"
+  >
+    Хватит мочилова!
   </button>
   <button v-else class="btn btn-success" v-on:click="readyToFight(true)">
     Готов к битве!
@@ -42,6 +45,12 @@
       </div>
       <div class="col-md-6">
         <h4>Активные бои</h4>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-12">
+        {{ fight_data.data }}
       </div>
     </div>
   </div>
@@ -87,8 +96,7 @@ export default {
   },
   watch: {
     fight_data(newValue, oldValue) {
-      this.sendFakeStep()
-      setInterval(this.sendFakeStep, 1000);
+      console.log('---', newValue)
     }
   },
   methods: {
@@ -96,15 +104,20 @@ export default {
       // Имитируем битву, отправляем рандомные команды на сервер по сокету
       let ship = this.ships[Math.floor(Math.random() * this.ships.length)];
       let command = this.commands[Math.floor(Math.random() * this.commands.length)];
-      console.log('command send - ', ship)
       let fakeCommand = {
-        token: this.fight_data.token, step: {id: ship.id, command}
+        token: this.fight_data.token,
+        step: {id: ship.id, command}
       }
       this.ws.send(JSON.stringify(fakeCommand))
     },
     onMessage(event) {
       let response = JSON.parse(event.data)
-      if ('fighters' in response) this.fighters = response['fighters']
+      if (response.hasOwnProperty('fighters')) {
+        this.fighters = response['fighters']
+      } else {
+        // Обновляем данные битвы
+        this.fight_data.data = response.data
+      }
     },
     async addFight() {
       // Создание битвы
@@ -116,6 +129,7 @@ export default {
             this.fight_data = data
             this.ships = this.fight_data.data.filter(item => item.name === "ship")
             console.log('FIGHT CREATED -- ', this.ships);
+            setInterval(this.sendFakeStep, 1000);
           }
       ).catch(
           error => {

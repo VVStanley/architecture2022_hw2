@@ -5,6 +5,7 @@ from fastapi import (
 )
 from starlette.websockets import WebSocketDisconnect
 
+from models.tokens import GameToken
 from services.fights import FightService
 from services.queue import q_manager
 from services.ws import ws_manager
@@ -36,7 +37,8 @@ async def websocket_endpoint(
             command = json.loads(command)
 
             # Проверяем токен битвы
-            payload = fight_service.decode_token(command.get('token', ''))
+            token = command.get('token', '')
+            payload = fight_service.decode_token(token)
             fight_id = payload.get('sub')
 
             # Получаем очередь для битвы и добавляем в нее команду
@@ -46,9 +48,12 @@ async def websocket_endpoint(
 
             # Отправляем данные битвы агенту
             users_id = payload.get('users', []).keys()
-            ws_manager.broadcast(
+            await ws_manager.broadcast(
                 users_id=users_id,
-                message=fight_service.get_data_fight(fight_id)
+                message=GameToken(
+                    token=token,
+                    data=fight_service.get_data_fight(fight_id)
+                ).dict()
             )
 
     except WebSocketDisconnect:
