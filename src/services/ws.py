@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from fastapi import WebSocket
 
@@ -30,12 +30,13 @@ class ConnectionManager:
         """Отправка сообщения на конкретный сокет"""
         await websocket.send_json(message)
 
-    async def broadcast(self, users, message: str) -> None:
+    async def broadcast(self, users_id: List[int], message: str) -> None:
         """ Отправка сообщений на несколько вебсокетов.
-        :param users: Пользователи, которым будет отправлено сообщение.
+        :param users_id: ИД пользователей, которым будет отправлено сообщение.
         :param message: Сообщение.
         """
-        for connection in self.active_connections.values():
+        for user_id in users_id:
+            connection = self.active_connections.get(user_id)
             await connection.send_json(message)
 
 

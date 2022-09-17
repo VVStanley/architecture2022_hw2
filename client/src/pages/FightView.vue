@@ -86,7 +86,6 @@ export default {
     this.ws.onmessage = this.onMessage
   },
   watch: {
-
     fight_data(newValue, oldValue) {
       this.sendFakeStep()
       setInterval(this.sendFakeStep, 1000);
@@ -94,37 +93,29 @@ export default {
   },
   methods: {
     async sendFakeStep() {
-      console.log('send')
-      // let ship = this.ships[Math.floor(Math.random() * this.ships.length)];
-      let ship = this.ships[0];
+      // Имитируем битву, отправляем рандомные команды на сервер по сокету
+      let ship = this.ships[Math.floor(Math.random() * this.ships.length)];
       let command = this.commands[Math.floor(Math.random() * this.commands.length)];
       console.log('command send - ', ship)
       let fakeCommand = {
-        token: this.fight_data.token,
-        step: {
-          id: ship.id,
-          command: "MoveBurnFuelCommand"
-        }
+        token: this.fight_data.token, step: {id: ship.id, command}
       }
       this.ws.send(JSON.stringify(fakeCommand))
     },
+    onMessage(event) {
+      let response = JSON.parse(event.data)
+      if ('fighters' in response) this.fighters = response['fighters']
+    },
     async addFight() {
-      let f = {ids: this.team.map(fighter => fighter.id).join(',')}
-      console.log(f)
+      // Создание битвы
       await axios.get(
           `/fights/add/?ids=${this.team.map(fighter => fighter.id).join(',')}`,
-          {
-            headers: {
-              Authorization: 'Bearer ' + store.getters.isAuth
-            }
-          }
+          {headers: {Authorization: 'Bearer ' + store.getters.isAuth}}
       ).then(
           ({data}) => {
             this.fight_data = data
-
             this.ships = this.fight_data.data.filter(item => item.name === "ship")
             console.log('FIGHT CREATED -- ', this.ships);
-
           }
       ).catch(
           error => {
@@ -138,14 +129,8 @@ export default {
       let exists = this.team.some(fighter => fighter.id === add_fighter.id)
       if (!exists) this.team.push(add_fighter)
     },
-    onMessage(event) {
-      let response = JSON.parse(event.data)
-      if ('fighters' in response) {
-        this.fighters = response['fighters']
-      }
-
-    },
     async readyToFight(ready_to_fight) {
+      // Смена статуса, ГОТОВ К БОЮ
       this.currentUser.ready_to_fight = ready_to_fight
       await axios.post(
           '/fights/ready/',
@@ -155,34 +140,27 @@ export default {
             fight: this.currentUser.fight,
             ready_to_fight: this.currentUser.ready_to_fight
           },
-          {
-            headers: {
-              Authorization: 'Bearer ' + store.getters.isAuth
-            }
-          }
+          {headers: {Authorization: 'Bearer ' + store.getters.isAuth}}
       ).then(
           responses => this.getCurrentUser()
       ).catch(
           error => {
             this.classAlert = 'alert alert-danger';
-            this.textAlert = error.response
+            this.textAlert = error.response;
           }
       )
     },
     async getCurrentUser() {
+      // Получение текущего пользователя
       await axios.get(
           '/auth/user/',
-          {
-            headers: {
-              Authorization: 'Bearer ' + store.getters.isAuth
-            }
-          }
+          {headers: {Authorization: 'Bearer ' + store.getters.isAuth}}
       ).then(
           ({data}) => this.currentUser = data
       ).catch(
           error => {
             this.classAlert = 'alert alert-danger';
-            this.textAlert = error.response
+            this.textAlert = error.response;
           }
       )
     }
