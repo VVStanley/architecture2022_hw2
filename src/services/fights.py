@@ -69,21 +69,25 @@ class FightService:
         db_users = (
             self.session.query(db_User).filter(db_User.id.in_(ids)).all()
         )
+        # Генерируем уникальный ИД для битвы
         fight_id = uuid.uuid4().hex
+
+        # Создаем токен для битвы
         token = self.create_token(db_users, fight_id)
 
+        # Сохраняем битву в БД
         db_fight = db_Fight(id=fight_id, token=token)
-
         self.session.bulk_update_mappings(
             db_User, [self._user_to_dict(user, db_fight) for user in db_users]
         )
-
         self.session.add(db_fight)
         self.session.commit()
         self.session.refresh(db_fight)
 
+        # Регистрируем новый скоуп с юнитами
         self._register_scope(len(ids), fight_id)
 
+        # Создаем очередь для новой битвы и поток лдя нее
         queue = q_manager.create_queue(fight_id=fight_id)
         thread = FightThread(queue=queue, fight_id=fight_id)
         thread.start()
