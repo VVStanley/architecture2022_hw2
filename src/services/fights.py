@@ -4,9 +4,8 @@ from typing import Any, Dict, List
 
 from fastapi import Depends
 from jose import JWTError, jwt
-from loguru import logger
 from sqlalchemy.orm import Session
-from threading import Lock
+
 from db import db_Fight, db_User
 from db.database import get_session
 from exceptions.auth import CouldNotValidateCredantialError
@@ -24,16 +23,18 @@ class FightService:
     """Сервис для сражений"""
 
     def __init__(self, session: Session = Depends(get_session)) -> None:
+        """Инициализация"""
         self.session: Session = session
 
     @staticmethod
     def _user_to_dict(user: db_User, db_fight: db_Fight) -> dict:
+        """Модернизируем пользователя в словарь"""
         user.fight = db_fight
         return User.from_orm(user).dict()
 
     @staticmethod
-    def decode_token(token: str) -> str:
-        """ Раскодируем токен и получим ИД боя """
+    def decode_token(token: str) -> dict:
+        """ Раскодируем токен битвы """
         try:
             payload = jwt.decode(
                 token,
@@ -42,8 +43,7 @@ class FightService:
             )
         except JWTError:
             raise CouldNotValidateCredantialError
-
-        return payload.get('sub')
+        return payload
 
     @staticmethod
     def create_token(db_users: List[db_User], fight_id: str) -> str:

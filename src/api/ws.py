@@ -1,12 +1,10 @@
 import json
-from loguru import logger
+
 from fastapi import (
     APIRouter, Depends, WebSocket,
 )
 from starlette.websockets import WebSocketDisconnect
 
-from injector.register import builder
-from models.units import get_model_by_name
 from services.fights import FightService
 from services.queue import q_manager
 from services.ws import ws_manager
@@ -23,7 +21,7 @@ async def websocket_endpoint(
     """Точка для обмена данными с агентом
     :param websocket: Вебсокет соединения.
     :param user_id: ИД пользователя с кем создаем соединение.
-    :param fight_service: Серывис для обработки битвы.
+    :param fight_service: Сервис для обработки битвы.
     """
     await ws_manager.connect(user_id, websocket)
     try:
@@ -34,27 +32,24 @@ async def websocket_endpoint(
         )
         while True:
             # Ожидаем команды
-            data = await websocket.receive_text()
-            data = json.loads(data)
+            command = await websocket.receive_text()
+            command = json.loads(command)
 
             # Проверяем токен битвы
-            fight_id = fight_service.decode_token(data.get('token', ''))
+            payload = fight_service.decode_token(command.get('token', ''))
+            fight_id = payload.get('sub')
 
             # Получаем очередь для битвы и добавляем в нее команду
             queue = q_manager.get_queue(fight_id)
-            queue.put(data.get('step'))
+            queue.put(command.get('step'))
             queue.join()
 
-            container = builder.container
-            logger.info(
-                json.dumps(
-                    [
-                        get_model_by_name(unit.name).from_orm(unit).dict()
-                        for unit in container.storage.get(fight_id).values()
-                    ]
-                )
+            # Отправляем данные битвы агенту
+            users_id = payload.get('users', []).keys()
+            ws_manager.broadcast(
+                users_id=users_id,
+                message=fight_service.get_data_fight(fight_id)
             )
-    #         TODO: Отправить измененые данные на фронт
 
     except WebSocketDisconnect:
         ws_manager.disconnect(websocket)

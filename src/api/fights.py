@@ -42,18 +42,9 @@ def get_fights(session: Session = Depends(get_session)):
 )
 def create_fight(ids: str, fight_service: FightService = Depends()):
     """Создание новой битвы.
-    :param ids: ИД пользователей для создания игры
+    :param ids: ИД пользователей для создания игры.
+    :param fight_service: Сервис для обработки битвы.
     """
     ids = ids.split(',')
     token: GameToken = fight_service.create_fight(ids)
     return token
-
-
-@router.post(
-    "/step_fight/", status_code=status.HTTP_201_CREATED
-)
-def step_fight(
-    token: str,
-    fight_service: FightService = Depends()
-):
-    a = 1
