@@ -1,3 +1,5 @@
+from typing import Dict
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
@@ -16,13 +18,13 @@ async def ready_to_fight(
     user: Fighter,
     session: Session = Depends(get_session),
     fight_service: FightService = Depends()
-):
+) -> Dict:
     """Меняем статус игрока и отправляем активных игроков всем участникам"""
     db_user = (
         session.query(db_User)
         .filter(db_User.id == user.id).first()
     )
-    setattr(db_user, 'ready_to_fight', user.ready_to_fight)
+    setattr(db_user, 'ready_to_fight', user.ready_to_fight)  # noqa: B010
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
@@ -31,7 +33,7 @@ async def ready_to_fight(
 
 
 @router.get("", status_code=status.HTTP_200_OK)
-def get_fights(session: Session = Depends(get_session)):
+def get_fights(session: Session = Depends(get_session)) -> Dict:
     """Получаем все текущие битвы"""
     fights = session.query(db_Fight).all()
     return {"fights": fights}
@@ -40,11 +42,13 @@ def get_fights(session: Session = Depends(get_session)):
 @router.get(
     "/add/", response_model=GameToken, status_code=status.HTTP_201_CREATED
 )
-def create_fight(ids: str, fight_service: FightService = Depends()):
+def create_fight(
+    ids: str, fight_service: FightService = Depends()
+) -> GameToken:
     """Создание новой битвы.
     :param ids: ИД пользователей для создания игры.
     :param fight_service: Сервис для обработки битвы.
     """
-    ids = ids.split(',')
-    token: GameToken = fight_service.create_fight(ids)
+    users_id = ids.split(',')
+    token: GameToken = fight_service.create_fight(users_id)
     return token

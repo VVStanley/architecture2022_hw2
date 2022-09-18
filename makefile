@@ -8,4 +8,4 @@ linter:
 	flake8 .
 
 mypy:
-	mypy .
+	mypy src/

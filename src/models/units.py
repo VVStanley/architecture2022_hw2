@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -43,7 +43,7 @@ class Ship(Unit):
     bullets: int
 
 
-def get_model_by_name(name: str) -> Type[Wall | Ship | Tower | Unit]:
+def get_model_by_name(name: str) -> Any:
     models = {
         'wall': Wall,
         'tower': Tower,

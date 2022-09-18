@@ -27,6 +27,7 @@ class ContainerBuilder:
     ) -> None:
         """Создаем Новые объекты в контейнере"""
         self.container.register(
-            scope, fight_id, self.container.storage.get(name_class)
-            # type: ignore
+            scope,
+            fight_id,
+            self.container.storage.get(name_class)  # type: ignore
         )

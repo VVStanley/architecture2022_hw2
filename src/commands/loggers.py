@@ -1,6 +1,5 @@
-from src.logconf import logger
-
 from src.design_patterns.command import CommandInterface
+from src.logconf import logger
 
 
 class LogCommand(CommandInterface):

@@ -13,7 +13,7 @@ router = APIRouter(prefix='/auth', tags=['auth'])
 def sign_up(
     user_data: UserCreate,
     auth_service: AuthService = Depends(),
-):
+) -> Token:
     return auth_service.register_new_user(user_data)
 
 
@@ -21,7 +21,7 @@ def sign_up(
 def sign_in(
     form_data: OAuth2PasswordRequestForm = Depends(),
     auth_service: AuthService = Depends(),
-):
+) -> Token:
     return auth_service.authenticate_user(
         form_data.username, form_data.password,
     )
@@ -31,7 +31,7 @@ def sign_in(
 def get_token(
     user: User = Depends(get_current_user),
     auth_service: AuthService = Depends(),
-):
+) -> Token:
     return auth_service.create_token(user)
 
 
@@ -39,6 +39,6 @@ def get_token(
 def get_user(
     user: User = Depends(get_current_user),
     auth_service: AuthService = Depends(),
-):
+) -> User:
     db_user = auth_service.get_user_by_username(user.username)
     return User.from_orm(db_user)

@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 
 class UserValidationError(HTTPException):
 
-    def __init__(self, error: str):
+    def __init__(self, error: str) -> None:
         super(UserValidationError, self).__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
             headers={'WWW-Authenticate': 'Bearer'},
@@ -14,7 +14,7 @@ class UserValidationError(HTTPException):
 class CouldNotValidateCredantialError(HTTPException):
     """Ошибка верификации токена"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(CouldNotValidateCredantialError, self).__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Could not validate credentials',
@@ -25,7 +25,7 @@ class CouldNotValidateCredantialError(HTTPException):
 class IncorrectCredantialError(HTTPException):
     """Ошибка входа и регистрации."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(IncorrectCredantialError, self).__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Incorrect username or password',

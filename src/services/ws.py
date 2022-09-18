@@ -1,4 +1,3 @@
-import json
 from typing import Dict, List
 
 from fastapi import WebSocket
@@ -8,7 +7,7 @@ class ConnectionManager:
     """Менеджер для работы с вебсокетами"""
 
     def __init__(self) -> None:
-        self.active_connections: Dict[int: WebSocket] = {}
+        self.active_connections: Dict[int, WebSocket] = {}
 
     async def connect(self, user_id: int, websocket: WebSocket) -> None:
         """Создаем соединение с новым вебсокетом.
@@ -18,11 +17,11 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections.update({user_id: websocket})
 
-    def disconnect(self, user_id: int) -> None:
+    async def disconnect(self, user_id: int) -> None:
         """Закрываем соединение"""
         websocket = self.active_connections.pop(user_id, None)
         if websocket:
-            websocket.close()
+            await websocket.close()
 
     @staticmethod
     async def send_personal_message(
@@ -31,7 +30,7 @@ class ConnectionManager:
         """Отправка сообщения на конкретный сокет"""
         await websocket.send_json(message)
 
-    async def broadcast(self, users_id: List[int], message: json) -> None:
+    async def broadcast(self, users_id: List[int], message: Dict) -> None:
         """ Отправка сообщений на несколько вебсокетов.
         :param users_id: ИД пользователей, которым будет отправлено сообщение.
         :param message: Сообщение.
