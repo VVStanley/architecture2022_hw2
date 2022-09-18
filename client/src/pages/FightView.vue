@@ -49,8 +49,21 @@
     </div>
     <hr>
     <div class="row">
-      <div class="col-md-12">
-        {{ fight_data.data }}
+      <div class="col-md-4">
+        <h3>Ships</h3>
+        <ul v-for="ship in getShips">
+          <li v-for="(value, key) in ship">{{ key }} - {{ value }}</li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <ul v-for="wall in getWalls">
+          <li v-for="(value, key) in wall">{{ key }} - {{ value }}</li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <ul v-for="tower in getTower">
+          <li v-for="(value, key) in tower">{{ key }} - {{ value }}</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -71,7 +84,7 @@ export default {
       ships: [],
       fight_data: {
         token: null,
-        data: null
+        data: []
       },
       classAlert: '',
       textAlert: '',
@@ -93,6 +106,17 @@ export default {
     await this.getCurrentUser();
     this.ws = new WebSocket(`ws://localhost:8000/ws/${this.currentUser.id}`);
     this.ws.onmessage = this.onMessage
+  },
+  computed: {
+    getShips() {
+      return this.fight_data.data.filter(item => item.name === "ship")
+    },
+    getWalls() {
+      return this.fight_data.data.filter(item => item.name === "wall")
+    },
+    getTower() {
+      return this.fight_data.data.filter(item => item.name === "tower")
+    }
   },
   watch: {
     fight_data(newValue, oldValue) {

@@ -1,30 +1,36 @@
 import threading
 
 from commands import act
-from injector.register import builder
+from src.logconf import logger
 
 
 class FightThread(threading.Thread):
     """Поток для битвы"""
 
-    fight_id = None
-    container = threading.local()
+    event = threading.Event()
+    lock = threading.Lock()
 
     def __init__(self, queue, fight_id) -> None:
         """Инициализация
         :param queue: Очередь для конкретной битвы.
         :param fight_id: ИД битвы.
         """
-        self.queue = queue
-        self.fight_id = fight_id
         threading.Thread.__init__(self, daemon=True)
-        self.container = builder.container
+        self.queue = queue
+        self.name = fight_id
 
     def run(self):
         """Обработка команды из очереди"""
         while True:
             api_command = self.queue.get()
             command = act.get(api_command.get("command"))
-            command = command(self.fight_id, api_command.get("id"))
-            command.execute()
+            command = command(self.name, api_command.get("id"))
+
+            try:
+                command.execute()
+            except Exception as e:
+                logger.error(
+                    f"Game:{self.name} thread:{self.name} message:{str(e)}"
+                )
+
             self.queue.task_done()
