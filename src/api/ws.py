@@ -18,7 +18,7 @@ async def websocket_endpoint(
     websocket: WebSocket,
     user_id: int,
     fight_service: FightService = Depends()
-):
+) -> None:
     """Точка для обмена данными с агентом
     :param websocket: Вебсокет соединения.
     :param user_id: ИД пользователя с кем создаем соединение.
@@ -37,13 +37,13 @@ async def websocket_endpoint(
             command = json.loads(command)
 
             # Проверяем токен битвы
-            token = command.get('token', '')
+            token = command.get('token', '')  # type: ignore
             payload = fight_service.decode_token(token)
             fight_id = payload.get('sub')
 
             # Получаем очередь для битвы и добавляем в нее команду
             queue = q_manager.get_queue(fight_id)
-            queue.put(command.get('step'))
+            queue.put(command.get('step'))  # type: ignore
             queue.join()
 
             # Отправляем данные битвы агенту

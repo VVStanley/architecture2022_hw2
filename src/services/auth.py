@@ -10,10 +10,10 @@ from sqlalchemy.orm import Session
 from db import db_User
 from db.database import get_session
 from exceptions.auth import (
-    CouldNotValidateCredantialError,
-    UserValidationError, IncorrectCredantialError,
+    CouldNotValidateCredantialError, IncorrectCredantialError,
+    UserValidationError,
 )
-from models import User, Token, UserCreate
+from models import Token, User, UserCreate
 from project.settings import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/sign-in/')

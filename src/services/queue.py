@@ -7,20 +7,20 @@ class QueueManager:
 
     def __init__(self) -> None:
         """Инициализация"""
-        self.queues: Dict[str: Queue] = {}
+        self.queues: Dict[str, Queue] = {}
 
-    def create_queue(self, fight_id: str) -> None:
+    def create_queue(self, fight_id: str) -> Queue:  # type: ignore
         """Создаем очередь для игры.
         :param fight_id: ИД битвы.
         """
         self.queues.update({fight_id: Queue()})
-        return self.queues.get(fight_id)
+        return self.queues.get(fight_id)  # type: ignore
 
-    def get_queue(self, fight_id: str) -> Queue:
+    def get_queue(self, fight_id: str) -> Queue:  # type: ignore
         """Возвращаем очередь по ИД боя.
         :param fight_id: ИД битвы.
         """
-        return self.queues.get(fight_id)
+        return self.queues.get(fight_id)  # type: ignore
 
 
 q_manager = QueueManager()

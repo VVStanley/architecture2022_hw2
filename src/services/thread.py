@@ -1,4 +1,5 @@
 import threading
+from queue import Queue
 
 from commands import act
 from src.logconf import logger
@@ -10,7 +11,7 @@ class FightThread(threading.Thread):
     event = threading.Event()
     lock = threading.Lock()
 
-    def __init__(self, queue, fight_id) -> None:
+    def __init__(self, queue: Queue, fight_id: str) -> None:
         """Инициализация
         :param queue: Очередь для конкретной битвы.
         :param fight_id: ИД битвы.
@@ -19,7 +20,7 @@ class FightThread(threading.Thread):
         self.queue = queue
         self.name = fight_id
 
-    def run(self):
+    def run(self) -> None:
         """Обработка команды из очереди"""
         while True:
             api_command = self.queue.get()

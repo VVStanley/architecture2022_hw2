@@ -108,7 +108,7 @@ class FightService:
         ]
 
     @staticmethod
-    def _register_scope(amount_users: int, fight_id: str):
+    def _register_scope(amount_users: int, fight_id: str) -> None:
         """Регистрируем scope для игры"""
         scope = get_scope(amount_ship=amount_users)
         builder.register_scope(scope, fight_id, name_class="Unit")
@@ -117,7 +117,7 @@ class FightService:
         """Возвращаем бойцов готовых к бою"""
         db_fighters = (
             self.session.query(db_User)
-            .filter(db_User.ready_to_fight == True).all()
+            .filter(db_User.ready_to_fight == True).all()  # noqa: E712
         )
         return {
             "fighters": [
