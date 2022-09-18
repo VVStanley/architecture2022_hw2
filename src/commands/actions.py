@@ -11,14 +11,15 @@ from src.injector import container
 class ShootCheckBulletCommand(CommandInterface):
     """Макрокоманда для выстрела"""
 
-    def __init__(self, fight_id: str, obj_id: int) -> None:
+    def __init__(self, fight_id: str, unit_id: int) -> None:
         """Инициализация"""
+        self.unit_id = unit_id
         self.collection = CommandCollection()
         self.collection.add_item(
-            container.resolve("CheckBulletsCommand", fight_id, obj_id)
+            container.resolve("CheckBulletsCommand", fight_id, unit_id)
         )
         self.collection.add_item(
-            container.resolve("ShootCommand", fight_id, obj_id)
+            container.resolve("ShootCommand", fight_id, unit_id)
         )
 
     def execute(self) -> None:
@@ -27,24 +28,26 @@ class ShootCheckBulletCommand(CommandInterface):
             try:
                 command.execute()
             except BaseCommandExceptionError as e:
-                break
-                # raise ShootCheckBulletCommandError(str(e))
+                raise ShootCheckBulletCommandError(
+                    f"unit:{self.unit_id} {str(e)};"
+                )
 
 
 class MoveBurnFuelCommand(CommandInterface):
     """Макрокоманда движения с расходом топлива"""
 
-    def __init__(self, fight_id: str, obj_id: int) -> None:
+    def __init__(self, fight_id: str, unit_id: int) -> None:
         """Инициализация"""
+        self.unit_id = unit_id
         self.collection = CommandCollection()
         self.collection.add_item(
-            container.resolve("CheckFuelCommand", fight_id, obj_id)
+            container.resolve("CheckFuelCommand", fight_id, unit_id)
         )
         self.collection.add_item(
-            container.resolve("MoveCommand", fight_id, obj_id)
+            container.resolve("MoveCommand", fight_id, unit_id)
         )
         self.collection.add_item(
-            container.resolve("BurnFuelCommand", fight_id, obj_id)
+            container.resolve("BurnFuelCommand", fight_id, unit_id)
         )
 
     def execute(self) -> None:
@@ -53,24 +56,26 @@ class MoveBurnFuelCommand(CommandInterface):
             try:
                 command.execute()
             except BaseCommandExceptionError as e:
-                break
-                # raise MoveBurnFuelCommandError(str(e))
+                raise MoveBurnFuelCommandError(
+                    f"unit:{self.unit_id} {str(e)};"
+                )
 
 
 class RotateBurnFuelCommand(CommandInterface):
     """Макрокоманда для поворота с расходом топлива"""
 
-    def __init__(self, fight_id: str, obj_id: int) -> None:
+    def __init__(self, fight_id: str, unit_id: int) -> None:
         """Инициализация"""
+        self.unit_id = unit_id
         self.collection = CommandCollection()
         self.collection.add_item(
-            container.resolve("CheckFuelCommand", fight_id, obj_id)
+            container.resolve("CheckFuelCommand", fight_id, unit_id)
         )
         self.collection.add_item(
-            container.resolve("RotateCommand", fight_id, obj_id)
+            container.resolve("RotateCommand", fight_id, unit_id)
         )
         self.collection.add_item(
-            container.resolve("BurnFuelCommand", fight_id, obj_id)
+            container.resolve("BurnFuelCommand", fight_id, unit_id)
         )
 
     def execute(self) -> None:
@@ -79,8 +84,9 @@ class RotateBurnFuelCommand(CommandInterface):
             try:
                 command.execute()
             except BaseCommandExceptionError as e:
-                break
-                # raise RotateBurnFuelCommandError(str(e))
+                raise RotateBurnFuelCommandError(
+                    f"unit:{self.unit_id} {str(e)};"
+                )
 
 
 act = {

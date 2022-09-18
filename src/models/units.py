@@ -29,6 +29,7 @@ class Tower(Unit):
     direction: int
     angular_velocity: int
     direction_numbers: int
+    bullets: int
 
 
 class Ship(Unit):
@@ -39,6 +40,7 @@ class Ship(Unit):
     angular_velocity: int
     direction_numbers: int
     velocity: int
+    bullets: int
 
 
 def get_model_by_name(name: str) -> Type[Wall | Ship | Tower | Unit]:

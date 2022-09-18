@@ -18,7 +18,7 @@ def get_scope(
             TechnicalArguments.AMOUNT.name: randint(2, 6),
             "id": AutoIncrementField(),
             "name": "wall",
-            "position": AutoVectorField()
+            "position": AutoVectorField(),
         },
         {
             TechnicalArguments.AMOUNT.name: randint(1, 3),
@@ -28,18 +28,19 @@ def get_scope(
             "direction": 7,
             "angular_velocity": 1,
             "direction_numbers": 8,
+            "bullets": 200,
         },
         {
             TechnicalArguments.AMOUNT.name: amount_ship,
             "id": AutoIncrementField(),
             "name": "ship",
-            "remaining_fuel": 500,
+            "remaining_fuel": 10,
             "consumption_fuel": 2,
             "position": AutoVectorField(),
             "direction": 7,
             "angular_velocity": 1,
             "direction_numbers": 8,
             "velocity": 9,
-            "bullets": 500
+            "bullets": 500,
         }
     ]
