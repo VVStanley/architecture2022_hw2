@@ -44,7 +44,6 @@ async def websocket_endpoint(
             # Получаем очередь для битвы и добавляем в нее команду
             queue = q_manager.get_queue(fight_id)
             queue.put(command.get('step'))  # type: ignore
-            queue.join()
 
             # Отправляем данные битвы агенту
             users_id = payload.get('users', []).keys()
@@ -57,4 +56,4 @@ async def websocket_endpoint(
             )
 
     except WebSocketDisconnect:
-        ws_manager.disconnect(websocket)
+        ws_manager.disconnect(user_id)

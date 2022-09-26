@@ -1,11 +1,12 @@
 import pytest
 
-from src.commands.actions import MoveBurnFuelCommand
-from src.exceptions.command import BaseCommandExceptionError
-from src.injector import container
-from src.injector.register import builder
-from src.injector.scope import get_scope
-from src.units.unit import Unit
+from commands.actions import MoveBurnFuelCommand
+from exceptions.command import (
+    MoveBurnFuelCommandError,
+)
+from injector import container
+from injector.scope import get_scope
+from units.unit import Unit
 
 
 class TestMoveBurnFuelCommand:
@@ -18,7 +19,7 @@ class TestMoveBurnFuelCommand:
     def setup_class(cls) -> None:
         cls.fight_id = '123123213'
         scope = get_scope(amount_ship=2)
-        builder.register_scope(scope, cls.fight_id, name_class="Unit")
+        container.register(scope, cls.fight_id, name_class="Unit")
         cls.ship = [
             i for i in container.storage.get(cls.fight_id).values()
             if i.name == 'ship'
@@ -43,7 +44,7 @@ class TestMoveBurnFuelCommand:
 
         command = MoveBurnFuelCommand(self.fight_id, self.ship.id)
 
-        with pytest.raises(BaseCommandExceptionError) as exc_info:
+        with pytest.raises(MoveBurnFuelCommandError) as exc_info:
             command.execute()
             command.execute()
             command.execute()

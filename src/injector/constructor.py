@@ -1,7 +1,7 @@
 import inspect
 from typing import Dict, TypeVar
 
-from src.exceptions.injector import DependencyResolutionExceptionError
+from exceptions.injector import DependencyResolutionExceptionError
 
 
 class Constructor:

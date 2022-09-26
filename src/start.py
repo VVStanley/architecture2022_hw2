@@ -1,11 +1,11 @@
 from collections import deque
 
-from src.client import api_commands
-from src.commands import act
-from src.commands.loggers import LogCommand
-from src.exceptions.command import BaseCommandExceptionError
-from src.exceptions.handler import ExceptionHandle
-from src.exceptions.repeater import (
+from client import api_commands
+from commands import act
+from commands.loggers import LogCommand
+from exceptions.command import BaseCommandExceptionError
+from exceptions.handler import ExceptionHandle
+from exceptions.repeater import (
     BaseRepeaterExceptionError,
     OneRepeaterError,
 )

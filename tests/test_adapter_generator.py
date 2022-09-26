@@ -2,8 +2,8 @@ import inspect
 
 import pytest
 
-from src.fuel.fueled import FueledInterface
-from src.injector.builder import ContainerBuilder
+from fuel.fueled import FueledInterface
+from injector.builder import ContainerBuilder
 
 
 @pytest.fixture

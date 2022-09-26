@@ -2,7 +2,7 @@ import logging
 
 from _pytest.logging import LogCaptureFixture
 
-from src.start import start
+from start import start
 
 
 class TestLoggers:

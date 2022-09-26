@@ -12,9 +12,11 @@ uvicorn
 pydantic
 python-dotenv
 SQLAlchemy
+SQLAlchemy-Utils
 alembic
 psycopg2
 python-jose==3.3.0
 passlib[bcrypt]
 python-multipart
 websockets
+requests

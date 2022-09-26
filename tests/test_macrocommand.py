@@ -2,9 +2,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.commands.iterator import CommandCollection
-from src.commands.macro_commands import MacroCommand
-from src.exceptions.command import BaseCommandExceptionError
+from commands.iterator import CommandCollection
+from commands.macro_commands import MacroCommand
+from exceptions.command import BaseCommandExceptionError
 
 
 class TestMacroCommand:

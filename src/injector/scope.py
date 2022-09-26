@@ -2,7 +2,7 @@ from enum import Enum
 from random import randint
 from typing import Any, Dict, List, Union
 
-from src.injector.fields import AutoIncrementField, AutoVectorField
+from injector.fields import AutoIncrementField, AutoVectorField
 
 
 class TechnicalArguments(Enum):

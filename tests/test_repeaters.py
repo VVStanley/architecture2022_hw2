@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from src.commands.repeater import (
+from commands.repeater import (
     OneRepeatCommand, ThreeRepeatCommand, TwoRepeatCommand,
 )
 

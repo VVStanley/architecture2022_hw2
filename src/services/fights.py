@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from db import db_Fight, db_User
 from db.database import get_session
 from exceptions.auth import CouldNotValidateCredantialError
-from injector.register import builder
+from injector import container
 from injector.scope import get_scope
 from models import Fighter, User
 from models.tokens import GameToken
@@ -90,6 +90,7 @@ class FightService:
         # Создаем очередь для новой битвы и поток лдя нее
         queue = q_manager.create_queue(fight_id=fight_id)
         thread = FightThread(queue=queue, fight_id=fight_id)
+
         thread.start()
 
         # Отправляем данные битвы агенту
@@ -101,7 +102,6 @@ class FightService:
     @staticmethod
     def get_data_fight(fight_id: str) -> List[dict]:
         """Возвращаем данные игры по ИД"""
-        container = builder.container
         return [
             get_model_by_name(unit.name).from_orm(unit).dict()
             for unit in container.storage.get(fight_id).values()
@@ -111,7 +111,18 @@ class FightService:
     def _register_scope(amount_users: int, fight_id: str) -> None:
         """Регистрируем scope для игры"""
         scope = get_scope(amount_ship=amount_users)
-        builder.register_scope(scope, fight_id, name_class="Unit")
+        container.register(scope, fight_id, name_class="Unit")
+
+    def get_users_fight(self) -> List[int]:
+        """  """
+        db_fighters = (
+            self.session.query(db_User)
+            .filter(db_User.ready_to_fight == True).all()  # noqa: E712
+        )
+        return [
+            fighter.id
+            for fighter in db_fighters
+        ]
 
     def get_fighters_message(self) -> Dict[str, List[Any]]:
         """Возвращаем бойцов готовых к бою"""

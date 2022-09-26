@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, Mock
 
-from src.rotate.rotate import RotateCommand
+from rotate.rotate import RotateCommand
 
 
 class TestRotate:
