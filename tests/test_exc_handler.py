@@ -1,7 +1,7 @@
 from collections import deque
 from unittest.mock import Mock
 
-from src.exceptions.handler import ExceptionHandle
+from exceptions.handler import ExceptionHandle
 
 
 class TestExceptionHandle:

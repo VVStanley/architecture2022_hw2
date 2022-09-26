@@ -1,11 +1,11 @@
-from src.commands.iterator import CommandCollection
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import (
-    BaseCommandExceptionError,
-    MoveBurnFuelCommandError, RotateBurnFuelCommandError,
-    ShootCheckBulletCommandError,
+from commands.iterator import CommandCollection
+from design_patterns.command import CommandInterface
+from exceptions.command import (
+    CheckBulletsCommandError, CheckFuelCommandError, MoveBurnFuelCommandError,
+    MoveCommandError, RotateBurnFuelCommandError,
+    RotateCommandError, ShootCheckBulletCommandError,
 )
-from src.injector import container
+from injector import container
 
 
 class ShootCheckBulletCommand(CommandInterface):
@@ -27,7 +27,7 @@ class ShootCheckBulletCommand(CommandInterface):
         for command in self.collection:
             try:
                 command.execute()
-            except BaseCommandExceptionError as e:
+            except CheckBulletsCommandError as e:
                 raise ShootCheckBulletCommandError(
                     f"unit:{self.unit_id} {str(e)};"
                 )
@@ -55,7 +55,7 @@ class MoveBurnFuelCommand(CommandInterface):
         for command in self.collection:
             try:
                 command.execute()
-            except BaseCommandExceptionError as e:
+            except (CheckFuelCommandError, MoveCommandError) as e:
                 raise MoveBurnFuelCommandError(
                     f"unit:{self.unit_id} {str(e)};"
                 )
@@ -83,7 +83,7 @@ class RotateBurnFuelCommand(CommandInterface):
         for command in self.collection:
             try:
                 command.execute()
-            except BaseCommandExceptionError as e:
+            except (CheckFuelCommandError, RotateCommandError) as e:
                 raise RotateBurnFuelCommandError(
                     f"unit:{self.unit_id} {str(e)};"
                 )

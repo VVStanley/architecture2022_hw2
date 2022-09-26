@@ -1,6 +1,6 @@
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import CheckBulletsCommandError
-from src.shoot.shooting import ShootingInterface
+from design_patterns.command import CommandInterface
+from exceptions.command import CheckBulletsCommandError
+from shoot.shooting import ShootingInterface
 
 
 class ShootCommand(CommandInterface):

@@ -49,6 +49,22 @@
     </div>
     <hr>
     <div class="row">
+      <div class="col-md-12">
+        <button v-on:click="setState('hard_stop')"
+                class="btn btn-sm btn-primary mx-2">
+          HARD STOP
+        </button>
+        <button v-on:click="setState('soft_stop')"
+                class="btn btn-sm btn-primary mx-2">
+          SOFT STOP
+        </button>
+        <button v-on:click="setState('move_to')"
+                class="btn btn-sm btn-primary mx-2">
+          MOVE TO
+        </button>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-4">
         <h3>Ships</h3>
         <ul v-for="ship in getShips">
@@ -94,6 +110,7 @@ export default {
         fight: null,
         ready_to_fight: null
       },
+      state: "read_command",
       commands: [
         "RotateBurnFuelCommand",
         "MoveBurnFuelCommand",
@@ -124,13 +141,17 @@ export default {
     }
   },
   methods: {
+    setState(state) {
+      this.state = state;
+      console.log(this.state)
+    },
     async sendFakeStep() {
       // Имитируем битву, отправляем рандомные команды на сервер по сокету
       let ship = this.ships[Math.floor(Math.random() * this.ships.length)];
       let command = this.commands[Math.floor(Math.random() * this.commands.length)];
       let fakeCommand = {
         token: this.fight_data.token,
-        step: {id: ship.id, command}
+        step: {id: ship.id, command, state: this.state}
       }
       this.ws.send(JSON.stringify(fakeCommand))
     },
@@ -153,7 +174,7 @@ export default {
             this.fight_data = data
             this.ships = this.fight_data.data.filter(item => item.name === "ship")
             console.log('FIGHT CREATED -- ', this.ships);
-            setInterval(this.sendFakeStep, 1000);
+            setInterval(this.sendFakeStep, 750);
           }
       ).catch(
           error => {

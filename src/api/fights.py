@@ -28,7 +28,10 @@ async def ready_to_fight(
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
-    await ws_manager.broadcast(message=fight_service.get_fighters_message())
+    await ws_manager.broadcast(
+        users_id=fight_service.get_users_fight(),
+        message=fight_service.get_fighters_message()
+    )
     return {"ok": True}
 
 
@@ -49,6 +52,7 @@ def create_fight(
     :param ids: ИД пользователей для создания игры.
     :param fight_service: Сервис для обработки битвы.
     """
+    # TODO: Необходимо проверять что пользователи ready_to_fight=True
     users_id = ids.split(',')
     token: GameToken = fight_service.create_fight(users_id)
     return token

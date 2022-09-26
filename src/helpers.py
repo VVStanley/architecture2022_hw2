@@ -1,4 +1,4 @@
-from src.units.unit import Unit
+from units.unit import Unit
 
 
 def print_unit(unit: Unit) -> None:

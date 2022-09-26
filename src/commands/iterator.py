@@ -1,7 +1,7 @@
 from collections.abc import Iterable, Iterator
 from typing import List
 
-from src.design_patterns.command import CommandInterface
+from design_patterns.command import CommandInterface
 
 
 class CommandIterator(Iterator):

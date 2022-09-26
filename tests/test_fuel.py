@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from src.exceptions.command import CheckFuelCommandError
-from src.fuel.fuel import BurnFuelCommand, CheckFuelCommand
+from exceptions.command import CheckFuelCommandError
+from fuel.fuel import BurnFuelCommand, CheckFuelCommand
 
 
 class TestFueled:

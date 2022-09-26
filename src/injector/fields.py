@@ -2,8 +2,8 @@ from abc import abstractmethod
 from random import randint
 from typing import Any
 
-from src.design_patterns.singleton import Singleton
-from src.utils.vector import Vector
+from design_patterns.singleton import Singleton
+from utils.vector import Vector
 
 
 class Field(metaclass=Singleton):

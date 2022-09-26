@@ -1,6 +1,6 @@
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import CheckFuelCommandError
-from src.fuel.fueled import FueledInterface
+from design_patterns.command import CommandInterface
+from exceptions.command import CheckFuelCommandError
+from fuel.fueled import FueledInterface
 
 
 class BurnFuelCommand(CommandInterface):

@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from src.units.unit import Unit
+from units.unit import Unit
 
 
 class RotableInterface(metaclass=ABCMeta):

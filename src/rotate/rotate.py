@@ -1,6 +1,6 @@
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import RotateCommandError
-from src.rotate.rotable import RotableInterface
+from design_patterns.command import CommandInterface
+from exceptions.command import RotateCommandError
+from rotate.rotable import RotableInterface
 
 
 class RotateCommand(CommandInterface):

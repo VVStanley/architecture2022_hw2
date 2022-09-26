@@ -1,4 +1,6 @@
+import sys
 from pathlib import Path
+
 from pydantic import BaseSettings
 
 
@@ -23,6 +25,10 @@ class Settings(BaseSettings):
     DB_HOST: str = "127.0.0.1"
     DB_NAME: str = "shipbattle"
     DB_PORT: str = "5432"
+
+    DB_TEST_NAME: str = "test_shipbattle"
+
+    TESTING: bool = any(['test_' in arg for arg in sys.argv])
 
 
 settings = Settings(

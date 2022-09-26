@@ -1,9 +1,9 @@
 from typing import Any, Dict, List, Union
 
-from src.exceptions.injector import DependencyResolutionExceptionError
-from src.injector.constructor import Constructor
-from src.injector.fields import Field
-from src.injector.scope import TechnicalArguments
+from exceptions.injector import DependencyResolutionExceptionError
+from injector.constructor import Constructor
+from injector.fields import Field
+from injector.scope import TechnicalArguments
 
 
 class Container:
@@ -15,14 +15,14 @@ class Container:
     storage: Dict[str, Any] = {}
 
     def register(
-        self, scope: List[dict], fight_id: str, constructor: Constructor
+        self, scope: List[dict], fight_id: str, name_class: str
     ) -> None:
         """
         :param scope:
         :param fight_id:
         :param constructor: Конструктор класса для инициализации объектов
         """
-        self._constructor = constructor
+        self._constructor = self.storage.get(name_class)
         self._scope = scope
         self._fight_id = fight_id
         self.storage[fight_id] = {}

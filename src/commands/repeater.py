@@ -1,6 +1,6 @@
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import BaseCommandExceptionError
-from src.exceptions.repeater import (
+from design_patterns.command import CommandInterface
+from exceptions.command import BaseCommandExceptionError
+from exceptions.repeater import (
     OneRepeaterError, ThreeRepeaterError,
     TwoRepeaterError,
 )

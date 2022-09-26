@@ -1,7 +1,7 @@
 import math
 
-from src.units.unit import Unit
-from src.utils.vector import Vector
+from units.unit import Unit
+from utils.vector import Vector
 
 
 def constructor(self, unit: Unit) -> None:  # type: ignore

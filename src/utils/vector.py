@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from src.exceptions.vector import ObjectIsNotVectorTypeError
+from exceptions.vector import ObjectIsNotVectorTypeError
 
 
 class VectorInterface(metaclass=ABCMeta):

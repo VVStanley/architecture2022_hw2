@@ -1,10 +1,10 @@
 from collections import deque
 
-from src.commands.repeater import (
+from commands.repeater import (
     OneRepeatCommand, ThreeRepeatCommand,
     TwoRepeatCommand,
 )
-from src.design_patterns.command import CommandInterface
+from design_patterns.command import CommandInterface
 
 
 class ExceptionHandle:

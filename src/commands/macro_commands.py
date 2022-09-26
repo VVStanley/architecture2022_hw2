@@ -1,6 +1,6 @@
-from src.commands.iterator import CommandCollection
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import BaseCommandExceptionError
+from commands.iterator import CommandCollection
+from design_patterns.command import CommandInterface
+from exceptions.command import BaseCommandExceptionError
 
 
 class MacroCommand(CommandInterface):

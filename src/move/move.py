@@ -1,8 +1,8 @@
-from src.design_patterns.command import CommandInterface
-from src.exceptions.command import MoveCommandError
-from src.exceptions.vector import ObjectIsNotVectorTypeError
-from src.move.movable import MovableInterface
-from src.utils.vector import Vector
+from design_patterns.command import CommandInterface
+from exceptions.command import MoveCommandError
+from exceptions.vector import ObjectIsNotVectorTypeError
+from move.movable import MovableInterface
+from utils.vector import Vector
 
 
 class MoveCommand(CommandInterface):

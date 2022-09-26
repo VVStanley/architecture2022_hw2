@@ -1,8 +1,6 @@
-from typing import List
-
-from src.injector.constructor import Constructor
-from src.injector.container import Container
-from src.injector.generator import AdapterGenerator
+from injector.constructor import Constructor
+from injector.container import Container
+from injector.generator import AdapterGenerator
 
 
 class ContainerBuilder:
@@ -21,13 +19,3 @@ class ContainerBuilder:
         """Регистрация классов"""
         constructor = Constructor(class_type)
         self.container.storage[class_type.__name__] = constructor
-
-    def register_scope(
-        self, scope: List[dict], fight_id: str, name_class: str
-    ) -> None:
-        """Создаем Новые объекты в контейнере"""
-        self.container.register(
-            scope,
-            fight_id,
-            self.container.storage.get(name_class)  # type: ignore
-        )

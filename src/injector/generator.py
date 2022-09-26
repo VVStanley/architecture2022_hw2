@@ -1,7 +1,7 @@
 import inspect
 from typing import Callable
 
-from src.injector.strategies import *  # noqa
+from injector.strategies import *  # noqa
 
 
 class AdapterGenerator:
@@ -35,9 +35,9 @@ class AdapterGenerator:
     @staticmethod
     def _get_constructor() -> Callable:
         """Возвращаем конструктор для адаптеров"""
-        constructor.__name__ = '__init__'  # noqa: F405
-        constructor.__qualname__ = '__init__'  # noqa: F405
-        return constructor  # noqa: F405
+        constructor.__name__ = '__init__'  # type: ignore # noqa: F405
+        constructor.__qualname__ = '__init__'  # type: ignore # noqa: F405
+        return constructor  # type: ignore # noqa: F405
 
     def resolve(self) -> type:
         return type(self.name, (object,), {
